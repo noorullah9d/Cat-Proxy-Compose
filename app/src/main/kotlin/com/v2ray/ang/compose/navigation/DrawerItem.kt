@@ -38,7 +38,7 @@ fun DrawerItem(
                     modifier = Modifier.weight(1f)
                 )
 
-                if (navigationItem.route == DrawerDestinations.LanguageScreen.route) {
+                if (navigationItem.route == Destinations.LanguageScreen.route) {
                     Text(
                         text = PrefUtils.selectedLanguage?.languageName ?: "English",
                         style = MaterialTheme.typography.bodyMedium,
@@ -49,7 +49,7 @@ fun DrawerItem(
 
                 Image(
                     painter = painterResource(id = R.drawable.ic_arrow_forward),
-                    contentDescription = "Forward",
+                    contentDescription = "Forward"
                 )
             }
         },

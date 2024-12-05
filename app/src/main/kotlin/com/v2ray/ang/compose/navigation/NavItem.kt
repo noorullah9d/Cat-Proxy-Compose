@@ -16,32 +16,32 @@ fun getNavItems(): List<NavItem> {
         NavItem(
             title = stringResource(id = R.string.language),
             icon = R.drawable.ic_languages,
-            route = DrawerDestinations.LanguageScreen.route
+            route = Destinations.LanguageScreen.route
         ),
         NavItem(
             title = stringResource(id = R.string.manage_subscription),
             icon = R.drawable.ic_restore_purchase,
-            route = DrawerDestinations.ManageSubscription.route
+            route = Destinations.ManageSubscription.route
         ),
         NavItem(
             title = stringResource(id = R.string.split_tunneling),
             icon = R.drawable.ic_filter,
-            route = DrawerDestinations.SplitTunnelingScreen.route
+            route = Destinations.SplitTunnelingScreen.route
         ),
         NavItem(
             title = stringResource(id = R.string.feedback),
             icon = R.drawable.ic_feedback,
-            route = DrawerDestinations.FeedbackScreen.route
+            route = Destinations.FeedbackScreen.route
         ),
         NavItem(
             title = stringResource(id = R.string.privacy),
             icon = R.drawable.ic_privacy,
-            route = DrawerDestinations.PrivacyPolicy.route
+            route = Destinations.PrivacyPolicy.route
         ),
         NavItem(
             title = stringResource(id = R.string.about),
             icon = R.drawable.ic_about,
-            route = DrawerDestinations.AboutScreen.route
+            route = Destinations.AboutScreen.route
         )
     )
 }

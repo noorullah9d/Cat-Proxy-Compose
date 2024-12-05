@@ -9,6 +9,7 @@ import android.net.VpnService
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
@@ -172,6 +173,10 @@ class MainActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedList
         }
         mainViewModel.startListenBroadcast()
         mainViewModel.copyAssets(assets)
+
+        val serverList = MmkvManager.decodeServerList()
+        val serverList2 = mainViewModel.serversCache
+        Log.d("MainActivity4", "onCreate: servers= $serverList2")
     }
 
     private fun initGroupTab() {

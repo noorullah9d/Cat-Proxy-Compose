@@ -11,26 +11,50 @@ import com.v2ray.ang.compose.ui.AboutScreen
 import com.v2ray.ang.compose.ui.SplitTunnelingScreen
 import com.v2ray.ang.compose.ui.home.HomeScreen
 import com.v2ray.ang.compose.ui.FeedbackScreen
+import com.v2ray.ang.compose.ui.PremiumScreen
+import com.v2ray.ang.compose.ui.servers.ServersScreen
 
 @Composable
 fun AppNavigation(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = DrawerDestinations.HomeScreen.route) {
-        DrawerDestinations.entries.forEach { screen ->
+    NavHost(navController = navController, startDestination = Destinations.HomeScreen.route) {
+        Destinations.entries.forEach { screen ->
             composable(screen.route) {
                 when (screen) {
-                    DrawerDestinations.HomeScreen -> HomeScreen()
-                    DrawerDestinations.LanguageScreen -> {}
-                    DrawerDestinations.ManageSubscription -> {
+                    Destinations.HomeScreen -> HomeScreen(
+                        navController = navController
+                    )
+                    Destinations.LanguageScreen -> {}
+                    Destinations.ManageSubscription -> {
                         OpenLink("https://www.google.com", navController)
                     }
-                    DrawerDestinations.SplitTunnelingScreen -> SplitTunnelingScreen()
-                    DrawerDestinations.FeedbackScreen -> FeedbackScreen()
-                    DrawerDestinations.PrivacyPolicy -> {
+
+                    Destinations.SplitTunnelingScreen -> SplitTunnelingScreen()
+                    Destinations.FeedbackScreen -> FeedbackScreen()
+                    Destinations.PrivacyPolicy -> {
                         OpenLink("https://www.google.com", navController)
                     }
-                    DrawerDestinations.AboutScreen -> AboutScreen {
+
+                    Destinations.AboutScreen -> AboutScreen {
                         navController.popBackStack()
                     }
+
+                    Destinations.PremiumScreen -> PremiumScreen {
+                        navController.popBackStack()
+                    }
+
+                    Destinations.ServersScreen -> ServersScreen(
+                        onServerSelected = { server ->
+                            // Handle server selection here and navigate back to HomeScreen
+                            navController.previousBackStackEntry?.savedStateHandle?.set(
+                                "selected_server",
+                                server
+                            )
+                            navController.popBackStack() // Navigate back to HomeScreen
+                        },
+                        onBackPressed = {
+                            navController.popBackStack()
+                        }
+                    )
                 }
             }
         }
@@ -45,5 +69,5 @@ fun OpenLink(url: String, navController: NavHostController) {
 
     // Pop the current screen off the stack (if not on Home), and navigate to Home screen
     // This will remove any screen above the Home screen, so it doesn't appear again when returning.
-    navController.popBackStack(DrawerDestinations.HomeScreen.route, inclusive = false)
+    navController.popBackStack(Destinations.HomeScreen.route, inclusive = false)
 }

@@ -37,15 +37,17 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.v2ray.ang.R
 import com.v2ray.ang.compose.navigation.AppNavigation
-import com.v2ray.ang.compose.navigation.DrawerDestinations
+import com.v2ray.ang.compose.navigation.Destinations
 import com.v2ray.ang.compose.navigation.DrawerHeader
 import com.v2ray.ang.compose.navigation.DrawerItem
 import com.v2ray.ang.compose.navigation.getNavItems
-import com.v2ray.ang.compose.ui.languages.LanguageSelectionSheet
 import com.v2ray.ang.compose.theme.CatProxyTheme
 import com.v2ray.ang.compose.theme.color_light_background
+import com.v2ray.ang.compose.ui.languages.LanguageSelectionSheet
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class ComposeMainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,7 +104,7 @@ private fun MainScreen() {
                             isSelected = false,
                             onClick = {
                                 when (navigationItem.route) {
-                                    DrawerDestinations.LanguageScreen.route -> {
+                                    Destinations.LanguageScreen.route -> {
                                         // Open the language selection sheet
                                         openLanguageSheet = true
                                     }
@@ -124,7 +126,7 @@ private fun MainScreen() {
     ) {
         Scaffold(
             topBar = {
-                if (currentRoute == DrawerDestinations.HomeScreen.route) {
+                if (currentRoute == Destinations.HomeScreen.route) {
                     TopAppBar(
                         title = {
                             Image(
@@ -141,6 +143,14 @@ private fun MainScreen() {
                                 Icon(
                                     imageVector = Icons.Default.Menu,
                                     contentDescription = "Menu"
+                                )
+                            }
+                        },
+                        actions = {
+                            IconButton(onClick = { navController.navigate(Destinations.PremiumScreen.route) }) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.ic_premium),
+                                    contentDescription = "Premium"
                                 )
                             }
                         }

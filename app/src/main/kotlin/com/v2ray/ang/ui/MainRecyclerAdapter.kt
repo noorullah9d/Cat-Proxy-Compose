@@ -3,6 +3,7 @@ package com.v2ray.ang.ui
 import android.content.Intent
 import android.graphics.Color
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -36,7 +37,7 @@ class MainRecyclerAdapter(val activity: MainActivity) : RecyclerView.Adapter<Mai
     }
 
     private var mActivity: MainActivity = activity
-    private val share_method: Array<out String> by lazy {
+    private val shareMethod: Array<out String> by lazy {
         mActivity.resources.getStringArray(R.array.share_method)
     }
     var isRunning = false
@@ -55,6 +56,9 @@ class MainRecyclerAdapter(val activity: MainActivity) : RecyclerView.Adapter<Mai
 //            } else {
 //                holder.itemMainBinding.cardView.visibility = View.VISIBLE
 //            }
+
+            val server = mActivity.mainViewModel.serversCache[position]
+            Log.d("MainRecyclerAdapter:", "onBindViewHolder: server= $server")
 
             val aff = MmkvManager.decodeServerAffiliationInfo(guid)
 
@@ -78,7 +82,7 @@ class MainRecyclerAdapter(val activity: MainActivity) : RecyclerView.Adapter<Mai
                 holder.itemMainBinding.tvSubscription.text = sub.remarks
             }
 
-            var shareOptions = share_method.asList()
+            var shareOptions = shareMethod.asList()
             when (profile.configType) {
                 EConfigType.CUSTOM -> {
                     holder.itemMainBinding.tvType.text = mActivity.getString(R.string.server_customize_config)
@@ -138,6 +142,7 @@ class MainRecyclerAdapter(val activity: MainActivity) : RecyclerView.Adapter<Mai
                     mActivity.startActivity(intent.setClass(mActivity, ServerActivity::class.java))
                 }
             }
+
             holder.itemMainBinding.layoutRemove.setOnClickListener {
                 if (guid != MmkvManager.mainStorage?.decodeString(MmkvManager.KEY_SELECTED_SERVER)) {
                     if (MmkvManager.settingsStorage?.decodeBool(AppConfig.PREF_CONFIRM_REMOVE) == true) {
@@ -145,7 +150,7 @@ class MainRecyclerAdapter(val activity: MainActivity) : RecyclerView.Adapter<Mai
                             .setPositiveButton(android.R.string.ok) { _, _ ->
                                 removeServer(guid, position)
                             }
-                            .setNegativeButton(android.R.string.no) { _, _ ->
+                            .setNegativeButton(android.R.string.cancel) { _, _ ->
                                 //do noting
                             }
                             .show()
@@ -167,17 +172,18 @@ class MainRecyclerAdapter(val activity: MainActivity) : RecyclerView.Adapter<Mai
                     notifyItemChanged(mActivity.mainViewModel.getPosition(guid))
                     if (isRunning) {
                         Utils.stopVService(mActivity)
-                        Observable.timer(500, TimeUnit.MILLISECONDS)
+                        val result = Observable.timer(500, TimeUnit.MILLISECONDS)
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribe {
                                 V2RayServiceManager.startV2Ray(mActivity)
                             }
+                        Log.d("MainRecyclerAdapter", "onBindViewHolder: result= $result")
                     }
                 }
             }
         }
         if (holder is FooterViewHolder) {
-            //if (activity?.defaultDPreference?.getPrefBoolean(AppConfig.PREF_INAPP_BUY_IS_PREMIUM, false)) {
+            //if (activity?.defaultDPreference?.getPrefBoolean(AppConfig.PREF_IN_APP_BUY_IS_PREMIUM, false)) {
             if (true) {
                 holder.itemFooterBinding.layoutEdit.visibility = View.INVISIBLE
             } else {
@@ -239,7 +245,7 @@ class MainRecyclerAdapter(val activity: MainActivity) : RecyclerView.Adapter<Mai
     override fun onItemDismiss(position: Int) {
         val guid = mActivity.mainViewModel.serversCache.getOrNull(position)?.guid ?: return
         if (guid != MmkvManager.mainStorage?.decodeString(MmkvManager.KEY_SELECTED_SERVER)) {
-//            mActivity.alert(R.string.del_config_comfirm) {
+//            mActivity.alert(R.string.del_config_confirm) {
 //                positiveButton(android.R.string.ok) {
             mActivity.mainViewModel.removeServer(guid)
             notifyItemRemoved(position)

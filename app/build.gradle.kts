@@ -1,7 +1,10 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("kotlin-parcelize")
     alias(libs.plugins.compose.compiler)
+    id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -107,8 +110,16 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.ui.tooling)
 
+    // Hilt dependencies
+    implementation(libs.hilt.android)  // Hilt Android
+    kapt(libs.hilt.compiler)
+
+    // coil
+    implementation(libs.coil.compose)
+
     // Compose Navigation
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.hilt.navigation.compose)
 
     // Lifecycle Integration
     implementation(libs.androidx.lifecycle.runtime.compose)
@@ -116,7 +127,6 @@ dependencies {
 
     // ViewModel Integration
     implementation(libs.androidx.lifecycle.viewmodel.compose)
-
     // ------------------ COMPOSE END ----------------
 
     implementation(libs.flexbox)

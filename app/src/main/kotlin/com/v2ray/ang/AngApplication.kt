@@ -7,7 +7,9 @@ import androidx.work.WorkManager
 import com.tencent.mmkv.MMKV
 import com.v2ray.ang.compose.utils.PrefUtils
 import com.v2ray.ang.util.Utils
+import dagger.hilt.android.HiltAndroidApp
 
+@HiltAndroidApp
 class AngApplication : MultiDexApplication() {
     companion object {
         //const val PREF_LAST_VERSION = "pref_last_version"
