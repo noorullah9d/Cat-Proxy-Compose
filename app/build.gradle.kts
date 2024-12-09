@@ -38,13 +38,17 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
     buildTypes {
-        release {
-            isMinifyEnabled = false
-
-        }
         debug {
             isMinifyEnabled = false
 
+            resValue("string", "base_url", "https://proxyapiv2.fusionsai.net/")
+            resValue("string", "support_url", "https://api.9dtechnologies.dev/api/support/")
+        }
+        release {
+            isMinifyEnabled = false
+
+            resValue("string", "base_url", "https://proxyapiv2.fusionsai.net/")
+            resValue("string", "support_url", "https://api.9dtechnologies.dev/api/support/")
         }
     }
 
@@ -101,7 +105,18 @@ dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar", "*.jar"))))
     testImplementation(libs.junit)
 
+    implementation(project(":cypherLib"))
+
     implementation(libs.androidx.core.ktx)
+
+    // retrofit
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+
+    //room
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    kapt(libs.androidx.room.compiler)
 
     // ------------------ COMPOSE START ----------------
     // Jetpack Compose Core
@@ -130,6 +145,7 @@ dependencies {
     // ------------------ COMPOSE END ----------------
 
     implementation(libs.flexbox)
+
     // Androidx
     implementation(libs.constraintlayout)
     implementation(libs.legacy.support.v4)

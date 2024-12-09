@@ -1,24 +1,39 @@
 package com.v2ray.ang.compose.ui.servers
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.v2ray.ang.R
-import com.v2ray.ang.compose.domain.ServerModel
+import com.v2ray.ang.compose.domain.model.ServerModel
 import com.v2ray.ang.compose.theme.CatProxyTheme
+import com.v2ray.ang.compose.theme.color_light_background
 import com.v2ray.ang.compose.ui.components.CenteredCircularProgressIndicator
 import com.v2ray.ang.compose.ui.components.CustomTopAppBar
 import com.v2ray.ang.compose.utils.Result
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ServersScreen(
     viewModel: ServersViewModel = hiltViewModel(),
@@ -27,20 +42,42 @@ fun ServersScreen(
 ) {
     val serverListState = viewModel.serverListState.collectAsState()
 
+    // Swipe refresh state
+    var isRefreshing by remember { mutableStateOf(false) }
+
     Scaffold(
         topBar = {
             CustomTopAppBar(
                 title = stringResource(R.string.locations),
                 onBackPressed = onBackPressed,
-                menuItems = listOf()
+                menuItems = listOf(
+                    {
+                        IconButton(onClick = { viewModel.fetchServers() }) {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_refresh),
+                                contentDescription = "Refresh"
+                            )
+                        }
+                    }
+                )
             )
         },
         content = { paddingValues ->
-            ServersContent(
-                modifier = Modifier.padding(paddingValues),
-                onServerSelected = onServerSelected,
-                serverListState = serverListState.value
-            )
+            PullToRefreshBox(
+                isRefreshing = isRefreshing,
+                onRefresh = {
+                    isRefreshing = true
+                    viewModel.fetchServers()
+                    isRefreshing = false
+                }
+            ) {
+                ServersContent(
+                    modifier = Modifier.padding(paddingValues),
+                    viewModel = viewModel,
+                    onServerSelected = onServerSelected,
+                    serverListState = serverListState.value
+                )
+            }
         }
     )
 }
@@ -48,29 +85,37 @@ fun ServersScreen(
 @Composable
 fun ServersContent(
     modifier: Modifier = Modifier,
+    viewModel: ServersViewModel?,
     onServerSelected: (ServerModel) -> Unit,
     serverListState: Result<List<ServerModel>>
 ) {
-    when (serverListState) {
-        is Result.Loading -> {
-            // Show a loading spinner while data is being fetched
-            CenteredCircularProgressIndicator()
-        }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(color_light_background)
+            .padding(8.dp)
+    ) {
+        when (serverListState) {
+            is Result.Loading -> {
+                CenteredCircularProgressIndicator()
+            }
 
-        is Result.Success -> {
-            val serverList = serverListState.data
-            LazyColumn(modifier) {
-                items(serverList) { server ->
-                    ServerItem(server = server) {
-                        onServerSelected(server)
+            is Result.Success -> {
+                val serverList = serverListState.data
+                LazyColumn(modifier) {
+                    items(serverList) { server ->
+                        ServerItem(server = server) {
+                            onServerSelected(server)
+                            viewModel?.setSelectedServer(server)
+                        }
                     }
                 }
             }
-        }
 
-        is Result.Error -> {
-            val errorMessage = serverListState.message
-            Text("Error: $errorMessage", color = Color.Red)
+            is Result.Error -> {
+                val errorMessage = serverListState.message
+                Text("Error: $errorMessage", color = Color.Red)
+            }
         }
     }
 }
@@ -79,6 +124,7 @@ fun ServersContent(
 @Preview(showBackground = false)
 fun ServersPreview() {
     CatProxyTheme {
+
         // Example list of dummy server data
         val dummyServers = listOf(
             ServerModel(
@@ -106,6 +152,7 @@ fun ServersPreview() {
 
         // Example 1: Success state with a list of servers
         ServersContent(
+            viewModel = null,
             onServerSelected = {},
             serverListState = Result.Success(dummyServers)
         )

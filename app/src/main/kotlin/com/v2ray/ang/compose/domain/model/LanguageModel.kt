@@ -1,4 +1,4 @@
-package com.v2ray.ang.compose.data
+package com.v2ray.ang.compose.domain.model
 
 import androidx.annotation.Keep
 

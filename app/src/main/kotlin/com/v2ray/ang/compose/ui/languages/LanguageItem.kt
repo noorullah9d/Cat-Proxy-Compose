@@ -26,7 +26,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.v2ray.ang.R
-import com.v2ray.ang.compose.data.LanguageModel
+import com.v2ray.ang.compose.domain.model.LanguageModel
 import com.v2ray.ang.compose.theme.color_light_primary
 import com.v2ray.ang.compose.theme.color_light_tile
 import com.v2ray.ang.compose.theme.color_light_unselected

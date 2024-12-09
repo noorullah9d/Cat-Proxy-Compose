@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "CatProxyCompose"
 include(":app")
+include(":cypherLib")

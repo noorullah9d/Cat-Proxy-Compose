@@ -1,6 +1,6 @@
 package com.v2ray.ang.compose.utils
 
-import com.v2ray.ang.compose.data.LanguageModel
+import com.v2ray.ang.compose.domain.model.LanguageModel
 import com.v2ray.ang.R
 
 fun languagesList(): List<LanguageModel> {

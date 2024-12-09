@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.multidex.MultiDexApplication
 import androidx.work.Configuration
 import androidx.work.WorkManager
+import com.galixo.cypherlib.NativeLib
 import com.tencent.mmkv.MMKV
 import com.v2ray.ang.compose.utils.PrefUtils
 import com.v2ray.ang.util.Utils
@@ -29,6 +30,7 @@ class AngApplication : MultiDexApplication() {
         super.onCreate()
 
         PrefUtils.init(this)
+        NativeLib.loadLibrary()
 
 //        LeakCanary.install(this)
 

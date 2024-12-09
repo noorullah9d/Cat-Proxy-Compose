@@ -9,18 +9,16 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.v2ray.ang.compose.domain.ServerModel
+import com.v2ray.ang.compose.domain.model.ServerModel
 import com.v2ray.ang.compose.navigation.Destinations
 import com.v2ray.ang.compose.theme.CatProxyTheme
 import com.v2ray.ang.compose.theme.color_light_background
@@ -28,18 +26,21 @@ import com.v2ray.ang.compose.theme.color_light_background
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
+    viewModel: HomeViewModel = hiltViewModel(),
     navController: NavController
 ) {
-    var selectedServer by remember { mutableStateOf<ServerModel?>(null) }
+
+    val selectedServer by viewModel.selectedServer.collectAsState()
+
+//    var selectedServer by remember { mutableStateOf<ServerModel?>(null) }
 
     // Retrieve the selected server if available from the saved state
-    LaunchedEffect(navController) {
+    /*LaunchedEffect(navController) {
         navController.currentBackStackEntry?.savedStateHandle?.get<ServerModel>("selected_server")
             ?.let {
                 selectedServer = it
             }
-    }
-
+    }*/
 
     Scaffold(
         topBar = {
@@ -70,9 +71,9 @@ fun HomeContent(
     ) {
         // Sample server data
         val server = selectedServer ?: ServerModel(
-            countryName = "USA",
-            cityName = "New York",
-            flag = "us"
+            countryName = "Unknown",
+            cityName = "",
+            flag = ""
         )
 
         HomeServer(
@@ -92,6 +93,11 @@ fun HomeContent(
 fun HomePreview() {
     CatProxyTheme {
         val navController = rememberNavController() // Mock NavController for preview
-        HomeScreen(navController)
+        val server = ServerModel()
+        HomeContent(
+            modifier = Modifier,
+            navController = navController,
+            selectedServer = server
+        )
     }
 }

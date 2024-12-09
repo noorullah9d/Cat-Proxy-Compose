@@ -4,15 +4,26 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.google.gson.Gson
-import com.v2ray.ang.compose.data.LanguageModel
+import com.v2ray.ang.compose.domain.model.LanguageModel
+import com.v2ray.ang.compose.domain.model.ServerModel
 import com.v2ray.ang.compose.utils.Constants.APP_PREFS
+import com.v2ray.ang.compose.utils.Constants.LAST_SELECTED_SERVER
 import com.v2ray.ang.compose.utils.Constants.SELECTED_LANG
+import com.v2ray.ang.compose.utils.Constants.SELECTED_SERVER
 
 object PrefUtils {
     private lateinit var sharedPreferences: SharedPreferences
     fun init(context: Context) {
         sharedPreferences = context.getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE)
     }
+
+    var lastSelectedProfile
+        get() = getObject(LAST_SELECTED_SERVER, ServerModel::class.java)
+        set(value) = sharedPreferences.edit { putObject(LAST_SELECTED_SERVER, value) }
+
+    var selectedProfile
+        get() = getObject(SELECTED_SERVER, ServerModel::class.java)
+        set(value) = sharedPreferences.edit { putObject(SELECTED_SERVER, value) }
 
     var selectedLanguage
         get() = getObject(SELECTED_LANG, LanguageModel::class.java)

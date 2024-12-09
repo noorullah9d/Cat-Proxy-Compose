@@ -22,7 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.v2ray.ang.R
-import com.v2ray.ang.compose.domain.ServerModel
+import com.v2ray.ang.compose.domain.model.ServerModel
 import com.v2ray.ang.compose.theme.color_light_stroke
 import com.v2ray.ang.compose.ui.components.FlagImage
 

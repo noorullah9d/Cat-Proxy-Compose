@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.v2ray.ang.compose.theme.color_light_primary
 
 @Composable
 fun CenteredCircularProgressIndicator(modifier: Modifier = Modifier) {
@@ -18,7 +19,8 @@ fun CenteredCircularProgressIndicator(modifier: Modifier = Modifier) {
         CircularProgressIndicator(
             modifier = Modifier
                 .size(40.dp) // Set size of the progress indicator
-                .align(Alignment.Center) // Align it in the center of the Box
+                .align(Alignment.Center), // Align it in the center of the Box
+            color = color_light_primary
         )
     }
 }

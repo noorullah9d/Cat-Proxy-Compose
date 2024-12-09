@@ -4,6 +4,7 @@ object Constants {
 
     const val APP_PREFS = "app_prefs"
     const val SELECTED_SERVER = "SELECTED_SERVER"
+    const val LAST_SELECTED_SERVER = "LAST_SELECTED_SERVER"
     const val SELECTED_SERVER_PROXY = "SELECTED_SERVER_PROXY"
     const val SHOULD_SHOW_REPORT = "SHOULD_SHOW_REPORT"
     const val SELECTED_LANG = "SELECTED_LANG"

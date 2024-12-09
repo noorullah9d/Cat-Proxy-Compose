@@ -45,10 +45,10 @@ fun AppNavigation(navController: NavHostController) {
                     Destinations.ServersScreen -> ServersScreen(
                         onServerSelected = { server ->
                             // Handle server selection here and navigate back to HomeScreen
-                            navController.previousBackStackEntry?.savedStateHandle?.set(
+                            /*navController.previousBackStackEntry?.savedStateHandle?.set(
                                 "selected_server",
                                 server
-                            )
+                            )*/
                             navController.popBackStack() // Navigate back to HomeScreen
                         },
                         onBackPressed = {

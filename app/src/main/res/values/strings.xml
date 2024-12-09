@@ -322,5 +322,6 @@
     <string name="select_language">Select Language</string>
     <string name="back">Back</string>
     <string name="locations">Locations</string>
+    <string name="server_not_available">Servers not available!</string>
 
 </resources>

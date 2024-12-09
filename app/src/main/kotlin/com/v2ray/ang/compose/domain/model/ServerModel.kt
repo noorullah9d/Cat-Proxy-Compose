@@ -1,4 +1,4 @@
-package com.v2ray.ang.compose.domain
+package com.v2ray.ang.compose.domain.model
 
 import androidx.annotation.Keep
 import android.os.Parcelable

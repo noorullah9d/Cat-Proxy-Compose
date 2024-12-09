@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -44,14 +44,17 @@ import com.v2ray.ang.compose.navigation.getNavItems
 import com.v2ray.ang.compose.theme.CatProxyTheme
 import com.v2ray.ang.compose.theme.color_light_background
 import com.v2ray.ang.compose.ui.languages.LanguageSelectionSheet
+import com.v2ray.ang.compose.ui.servers.ServersViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class ComposeMainActivity : BaseActivity() {
+    private val serversViewModel: ServersViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
+//        enableEdgeToEdge()
+        serversViewModel.fetchServers()
         setContent {
             CatProxyTheme {
                 Surface {
@@ -122,7 +125,8 @@ private fun MainScreen() {
                 }
             }
         },
-        drawerState = drawerState
+        drawerState = drawerState,
+        gesturesEnabled = false
     ) {
         Scaffold(
             topBar = {
@@ -159,7 +163,7 @@ private fun MainScreen() {
             },
             content = {
                 AppNavigation(navController)
-            },
+            }
         )
     }
 
