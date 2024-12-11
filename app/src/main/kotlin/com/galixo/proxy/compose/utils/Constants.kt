@@ -1,0 +1,25 @@
+package com.galixo.proxy.compose.utils
+
+object Constants {
+
+    const val APP_PREFS = "app_prefs"
+    const val SELECTED_SERVER = "SELECTED_SERVER"
+    const val LAST_SELECTED_SERVER = "LAST_SELECTED_SERVER"
+    const val SELECTED_SERVER_PROXY = "SELECTED_SERVER_PROXY"
+    const val SHOULD_SHOW_REPORT = "SHOULD_SHOW_REPORT"
+    const val SELECTED_LANG = "SELECTED_LANG"
+    const val HAS_TERM_AND_CONDITION_ACCEPTED = "HAS_TERM_AND_CONDITION_ACCEPTED"
+    const val IS_PREMIUM = "IS_PREMIUM"
+    const val DISABLED_APPS = "DISABLED_APPS"
+    const val FREE_VPN_TIME = "FREE_VPN_TIME"
+    const val LAST_PREMIUM_SHOWN_TIME = "LAST_PREMIUM_SHOWN_TIME"
+    const val FREE_VPN_TIME_VALUE = 3600000L
+    const val SELECTED_SERVICE_MODE = "SELECTED_SERVICE_MODE"
+    const val BROWSER_DOWNLOAD = "BROWSER_DOWNLOAD"
+    const val IS_BROWSER_GUIDE_SHOWN = "IS_BROWSER_GUIDE_SHOWN"
+    const val IS_FIRST_TIME = "IS_FIRST_TIME"
+    const val SESSION_COUNT = "SESSION_COUNT"
+    const val IS_SPLASH_PREMIUM_FIRST_VISIT = "IS_SPLASH_PREMIUM_FIRST_VISIT"
+
+    var shouldWaitForAdLoad = false
+}

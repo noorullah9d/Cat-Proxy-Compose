@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace = "com.v2ray.ang"
+    namespace = "com.galixo.proxy"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.v2ray.ang"
+        applicationId = "com.galixo.proxy"
         minSdk = 24
         targetSdk = 34
         versionCode = 586
@@ -139,6 +139,9 @@ dependencies {
     // Lifecycle Integration
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.activity.compose)
+
+    // compose live data
+    implementation(libs.androidx.runtime.livedata)
 
     // ViewModel Integration
     implementation(libs.androidx.lifecycle.viewmodel.compose)
