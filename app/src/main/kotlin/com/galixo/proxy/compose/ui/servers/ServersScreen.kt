@@ -37,7 +37,6 @@ import com.galixo.proxy.compose.utils.Result
 @Composable
 fun ServersScreen(
     viewModel: ServersViewModel = hiltViewModel(),
-    onServerSelected: (ServerModel) -> Unit,
     onBackPressed: () -> Unit
 ) {
     val serverListState = viewModel.serverListState.collectAsState()
@@ -74,7 +73,7 @@ fun ServersScreen(
                 ServersContent(
                     modifier = Modifier.padding(paddingValues),
                     viewModel = viewModel,
-                    onServerSelected = onServerSelected,
+                    onBackPressed = onBackPressed,
                     serverListState = serverListState.value
                 )
             }
@@ -86,7 +85,7 @@ fun ServersScreen(
 fun ServersContent(
     modifier: Modifier = Modifier,
     viewModel: ServersViewModel?,
-    onServerSelected: (ServerModel) -> Unit,
+    onBackPressed: () -> Unit,
     serverListState: Result<List<ServerModel>>
 ) {
     Column(
@@ -105,8 +104,8 @@ fun ServersContent(
                 LazyColumn(modifier) {
                     items(serverList) { server ->
                         ServerItem(server = server) {
-                            onServerSelected(server)
                             viewModel?.setSelectedServer(server)
+                            onBackPressed()
                         }
                     }
                 }
@@ -153,7 +152,7 @@ fun ServersPreview() {
         // Example 1: Success state with a list of servers
         ServersContent(
             viewModel = null,
-            onServerSelected = {},
+            onBackPressed = {},
             serverListState = Result.Success(dummyServers)
         )
 

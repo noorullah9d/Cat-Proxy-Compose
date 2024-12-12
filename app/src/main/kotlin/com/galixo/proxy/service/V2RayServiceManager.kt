@@ -74,8 +74,10 @@ object V2RayServiceManager {
             context.toast(R.string.toast_services_start)
         }
         val intent = if ((settingsStorage?.decodeString(AppConfig.PREF_MODE) ?: "VPN") == "VPN") {
+            Log.d("TAG", "startV2Ray: vpn service")
             Intent(context.applicationContext, V2RayVpnService::class.java)
         } else {
+            Log.d("TAG", "startV2Ray: proxy service")
             Intent(context.applicationContext, V2RayProxyOnlyService::class.java)
         }
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1) {
