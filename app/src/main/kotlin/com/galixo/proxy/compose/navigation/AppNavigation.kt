@@ -8,7 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.galixo.proxy.compose.ui.AboutScreen
-import com.galixo.proxy.compose.ui.SplitTunnelingScreen
+import com.galixo.proxy.compose.ui.tunneling.SplitTunnelingScreen
 import com.galixo.proxy.compose.ui.home.HomeScreen
 import com.galixo.proxy.compose.ui.FeedbackScreen
 import com.galixo.proxy.compose.ui.PremiumScreen
@@ -28,7 +28,9 @@ fun AppNavigation(navController: NavHostController) {
                         OpenLink("https://www.google.com", navController)
                     }
 
-                    Destinations.SplitTunnelingScreen -> SplitTunnelingScreen()
+                    Destinations.SplitTunnelingScreen -> SplitTunnelingScreen {
+                        navController.popBackStack()
+                    }
                     Destinations.FeedbackScreen -> FeedbackScreen()
                     Destinations.PrivacyPolicy -> {
                         OpenLink("https://www.google.com", navController)
@@ -43,14 +45,6 @@ fun AppNavigation(navController: NavHostController) {
                     }
 
                     Destinations.ServersScreen -> ServersScreen(
-                        onServerSelected = { server ->
-                            // Handle server selection here and navigate back to HomeScreen
-                            /*navController.previousBackStackEntry?.savedStateHandle?.set(
-                                "selected_server",
-                                server
-                            )*/
-                            navController.popBackStack() // Navigate back to HomeScreen
-                        },
                         onBackPressed = {
                             navController.popBackStack()
                         }
