@@ -323,5 +323,6 @@
     <string name="back">Back</string>
     <string name="locations">Locations</string>
     <string name="server_not_available">Servers not available!</string>
+    <string name="failed_to_send_feedback">Failed to send feedback!</string>
 
 </resources>

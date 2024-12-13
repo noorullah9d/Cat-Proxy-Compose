@@ -10,7 +10,7 @@ import androidx.navigation.compose.composable
 import com.galixo.proxy.compose.ui.AboutScreen
 import com.galixo.proxy.compose.ui.tunneling.SplitTunnelingScreen
 import com.galixo.proxy.compose.ui.home.HomeScreen
-import com.galixo.proxy.compose.ui.FeedbackScreen
+import com.galixo.proxy.compose.ui.feedback.FeedbackScreen
 import com.galixo.proxy.compose.ui.PremiumScreen
 import com.galixo.proxy.compose.ui.servers.ServersScreen
 
@@ -23,6 +23,7 @@ fun AppNavigation(navController: NavHostController) {
                     Destinations.HomeScreen -> HomeScreen(
                         navController = navController
                     )
+
                     Destinations.LanguageScreen -> {}
                     Destinations.ManageSubscription -> {
                         OpenLink("https://www.google.com", navController)
@@ -31,7 +32,11 @@ fun AppNavigation(navController: NavHostController) {
                     Destinations.SplitTunnelingScreen -> SplitTunnelingScreen {
                         navController.popBackStack()
                     }
-                    Destinations.FeedbackScreen -> FeedbackScreen()
+
+                    Destinations.FeedbackScreen -> FeedbackScreen {
+                        navController.popBackStack()
+                    }
+
                     Destinations.PrivacyPolicy -> {
                         OpenLink("https://www.google.com", navController)
                     }
