@@ -129,6 +129,9 @@ dependencies {
     implementation(libs.hilt.android)  // Hilt Android
     kapt(libs.hilt.compiler)
 
+    // lottie
+    implementation(libs.lottie.compose)
+
     // coil
     implementation(libs.coil.compose)
 
