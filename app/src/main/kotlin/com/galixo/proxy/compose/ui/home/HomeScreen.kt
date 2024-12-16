@@ -83,6 +83,7 @@ fun HomeContent(
         )
 
         ConnectButton(
+            context = context,
             onClick = {
                 Toast.makeText(context, "Not implemented!", Toast.LENGTH_SHORT).show()
             }

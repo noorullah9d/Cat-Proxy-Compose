@@ -1,5 +1,6 @@
 package com.galixo.proxy.compose.ui.home
 
+import android.content.Context
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -26,16 +27,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.galixo.proxy.R
+import com.galixo.proxy.compose.admob.SmallNativeAd
 import com.galixo.proxy.compose.theme.CatProxyTheme
 import com.galixo.proxy.compose.theme.color_light_primary
 import com.galixo.proxy.compose.theme.color_light_text_primary
 
 @Composable
 fun ConnectButton(
+    context: Context,
     onClick: () -> Unit
 ) {
     // Remember the infinite transition for the animation
@@ -89,6 +93,11 @@ fun ConnectButton(
             modifier = Modifier.padding(top = 8.dp),
             color = color_light_text_primary
         )
+
+        SmallNativeAd(
+            context = context,
+            adUnitId = "ca-app-pub-3940256099942544/2247696110"
+        )
     }
 }
 
@@ -97,6 +106,7 @@ fun ConnectButton(
 @Preview(showBackground = false)
 fun AnimatedButtonPreview() {
     CatProxyTheme {
-        ConnectButton {}
+        val context = LocalContext.current
+        ConnectButton(context) {}
     }
 }
