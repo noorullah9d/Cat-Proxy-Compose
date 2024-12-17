@@ -62,7 +62,7 @@ fun ConnectButton(
         verticalArrangement = Arrangement.Bottom,
         modifier = Modifier
             .fillMaxSize()
-            .padding(bottom = 48.dp) // Adjust the bottom padding for the Column
+//            .padding(bottom = 48.dp) // Adjust the bottom padding for the Column
     ) {
         // Button container
         Box(
@@ -83,7 +83,6 @@ fun ConnectButton(
             )
         }
 
-        // Spacer to create space between the button and the text (optional)
         Spacer(modifier = Modifier.height(4.dp))
 
         // Text below the ConnectButton
@@ -93,6 +92,8 @@ fun ConnectButton(
             modifier = Modifier.padding(top = 8.dp),
             color = color_light_text_primary
         )
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         SmallNativeAd(
             context = context,

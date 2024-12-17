@@ -30,6 +30,7 @@ import com.galixo.proxy.compose.theme.color_light_btn_text
 import com.galixo.proxy.compose.theme.color_light_primary
 import com.galixo.proxy.compose.theme.color_light_text_primary
 import com.galixo.proxy.compose.theme.color_light_text_secondary
+import com.galixo.proxy.compose.ui.components.StarRatingBar
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdView
 
@@ -74,7 +75,7 @@ private fun LoadAdContent(nativeAd: NativeAd?, composeView: View?) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp)
+            .padding(4.dp)
             .clip(CardDefaults.shape)
             .combinedClickable {
                 composeView?.performClick()
@@ -113,7 +114,7 @@ private fun LoadAdContent(nativeAd: NativeAd?, composeView: View?) {
                             style = MaterialTheme.typography.bodyLarge,
                             color = color_light_text_primary,
                         )
-                        Spacer(modifier = Modifier.height(2.dp))
+                        Spacer(modifier = Modifier.height(4.dp))
                         Row {
                             Text(
                                 text = "Ad",
@@ -127,6 +128,11 @@ private fun LoadAdContent(nativeAd: NativeAd?, composeView: View?) {
                                         shape = RoundedCornerShape(5.dp)
                                     )
                                     .padding(horizontal = 4.dp, vertical = 1.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            StarRatingBar(
+                                rating = it?.starRating!!.toFloat(),
+                                onRatingChanged = {}
                             )
                         }
                     }
