@@ -6,6 +6,7 @@ import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -27,10 +28,12 @@ import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -45,6 +48,7 @@ import com.galixo.proxy.compose.theme.CatProxyTheme
 import com.galixo.proxy.compose.theme.color_light_background
 import com.galixo.proxy.compose.ui.languages.LanguageSelectionSheet
 import com.galixo.proxy.compose.ui.servers.ServersViewModel
+import com.galixo.proxy.compose.utils.PrefUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -72,6 +76,7 @@ private fun MainScreen() {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     val navController = rememberNavController()
+    val hasTermsAndConditionsAccepted = remember { PrefUtils.hasTermsAndConditionsAccepted }
 
     // State for Bottom Sheet
     var openLanguageSheet by rememberSaveable { mutableStateOf(false) }
@@ -162,7 +167,11 @@ private fun MainScreen() {
                 }
             },
             content = {
-                AppNavigation(navController)
+                AppNavigation(
+                    context = LocalContext.current,
+                    navController = navController,
+                    hasTermsAndConditionsAccepted = hasTermsAndConditionsAccepted
+                )
             }
         )
     }

@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -94,8 +93,8 @@ fun ServersContent(
     onBackPressed: () -> Unit,
     serverListState: Result<List<ServerModel>>
 ) {
-    var isAdLoading by remember { mutableStateOf(true) }
-    var isAdVisible by remember { mutableStateOf(false) }
+    var shouldShowShimmer by remember { mutableStateOf(true) }
+    var shouldShowBannerAd by remember { mutableStateOf(true) }
 
     Column(
         modifier = Modifier
@@ -127,6 +126,7 @@ fun ServersContent(
                         }
                     }
                 }
+                shouldShowBannerAd = true
             }
 
             is Result.Error -> {
@@ -139,20 +139,24 @@ fun ServersContent(
                 ) {
                     Text("Error: $errorMessage", color = Color.Red)
                 }
+                shouldShowBannerAd = false
+                shouldShowShimmer = false
             }
         }
 
-        if (isAdLoading) {
+        if (shouldShowShimmer) {
             BannerShimmer(
                 modifier = Modifier.fillMaxWidth()
             )
         }
 
-        BannerAdView(
-            modifier = Modifier.fillMaxWidth(),
-            onAdLoaded = { isAdLoading = false}, // Hide shimmer when ad loads
-            onFailedToLoad = { isAdLoading = false}
-        )
+        if (shouldShowBannerAd) {
+            BannerAdView(
+                modifier = Modifier.fillMaxWidth(),
+                onAdLoaded = { shouldShowShimmer = false }, // Hide shimmer when ad loads
+                onFailedToLoad = { shouldShowShimmer = false }
+            )
+        }
     }
 }
 

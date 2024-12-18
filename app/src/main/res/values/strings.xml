@@ -324,5 +324,10 @@
     <string name="locations">Locations</string>
     <string name="server_not_available">Servers not available!</string>
     <string name="failed_to_send_feedback">Failed to send feedback!</string>
+    <string name="agreement_text">We strictly follow a no-logs policy and comply with relevant data privacy laws. We only collect essential anonymous data, such as system country and language, during service setup and do not retain it. Your installed apps are stored locally, allowing you to customize Proxy usage preferences for specific applications.</string>
+    <string name="agree_and_continue"><![CDATA[Agree & Continue]]></string>
+    <string name="terms_and_conditions_summary">For further information, please check out our Privacy Policy and Terms and Conditions</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="terms_and_conditions">Terms and Conditions</string>
 
 </resources>

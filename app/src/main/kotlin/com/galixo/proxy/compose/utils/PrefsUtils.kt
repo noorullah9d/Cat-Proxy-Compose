@@ -8,6 +8,7 @@ import com.galixo.proxy.compose.domain.model.LanguageModel
 import com.galixo.proxy.compose.domain.model.ServerModel
 import com.galixo.proxy.compose.utils.Constants.APP_PREFS
 import com.galixo.proxy.compose.utils.Constants.DISABLED_APPS
+import com.galixo.proxy.compose.utils.Constants.HAS_TERM_AND_CONDITION_ACCEPTED
 import com.galixo.proxy.compose.utils.Constants.LAST_SELECTED_SERVER
 import com.galixo.proxy.compose.utils.Constants.SELECTED_LANG
 import com.galixo.proxy.compose.utils.Constants.SELECTED_SERVER
@@ -17,6 +18,10 @@ object PrefUtils {
     fun init(context: Context) {
         sharedPreferences = context.getSharedPreferences(APP_PREFS, Context.MODE_PRIVATE)
     }
+
+    var hasTermsAndConditionsAccepted
+        get() = sharedPreferences.getBoolean(HAS_TERM_AND_CONDITION_ACCEPTED, false)
+        set(value) = sharedPreferences.edit { putBoolean(HAS_TERM_AND_CONDITION_ACCEPTED, value) }
 
     var lastSelectedProfile
         get() = getObject(LAST_SELECTED_SERVER, ServerModel::class.java)
