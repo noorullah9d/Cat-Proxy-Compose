@@ -151,7 +151,7 @@ fun Modifier.shimmerEffect(): Modifier = composed {
 
 @Preview(showBackground = false)
 @Composable
-fun ShimmerPreview() {
+fun NativeShimmerPreview() {
     CatProxyTheme {
         SmallNativeShimmer(
             modifier = Modifier
