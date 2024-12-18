@@ -2,8 +2,11 @@ package com.galixo.proxy.compose.ui.servers
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -18,6 +21,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -26,6 +30,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.galixo.proxy.R
+import com.galixo.proxy.compose.admob.BannerAdView
+import com.galixo.proxy.compose.admob.BannerShimmer
 import com.galixo.proxy.compose.domain.model.ServerModel
 import com.galixo.proxy.compose.theme.CatProxyTheme
 import com.galixo.proxy.compose.theme.color_light_background
@@ -88,6 +94,9 @@ fun ServersContent(
     onBackPressed: () -> Unit,
     serverListState: Result<List<ServerModel>>
 ) {
+    var isAdLoading by remember { mutableStateOf(true) }
+    var isAdVisible by remember { mutableStateOf(false) }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -96,12 +105,21 @@ fun ServersContent(
     ) {
         when (serverListState) {
             is Result.Loading -> {
-                CenteredCircularProgressIndicator()
+                CenteredCircularProgressIndicator(
+                    modifier = Modifier
+                        .weight(1f) // Take up remaining space
+                        .fillMaxSize()
+                )
             }
 
             is Result.Success -> {
                 val serverList = serverListState.data
-                LazyColumn(modifier) {
+                LazyColumn(
+                    modifier = modifier
+                        .weight(1f) // Take up remaining space
+                        .fillMaxWidth()
+                        .padding(bottom = 8.dp)
+                ) {
                     items(serverList) { server ->
                         ServerItem(server = server) {
                             viewModel?.setSelectedServer(server)
@@ -113,9 +131,28 @@ fun ServersContent(
 
             is Result.Error -> {
                 val errorMessage = serverListState.message
-                Text("Error: $errorMessage", color = Color.Red)
+                Box(
+                    modifier = Modifier
+                        .weight(1f) // Take up remaining space
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("Error: $errorMessage", color = Color.Red)
+                }
             }
         }
+
+        if (isAdLoading) {
+            BannerShimmer(
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+
+        BannerAdView(
+            modifier = Modifier.fillMaxWidth(),
+            onAdLoaded = { isAdLoading = false}, // Hide shimmer when ad loads
+            onFailedToLoad = { isAdLoading = false}
+        )
     }
 }
 
@@ -158,13 +195,15 @@ fun ServersPreview() {
 
         // Example 2: Loading state (Uncomment to see loading state)
         /*ServersContent(
-            onServerSelected = {},
-            serverListState = Result.Loading
+            viewModel = null,
+            onBackPressed = {},
+            serverListState = Result.Loading("")
         )*/
 
         // Example 3: Error state (Uncomment to see error state)
         /*ServersContent(
-            onServerSelected = {},
+            viewModel = null,
+            onBackPressed = {},
             serverListState = Result.Error("Failed to load servers")
         )*/
     }

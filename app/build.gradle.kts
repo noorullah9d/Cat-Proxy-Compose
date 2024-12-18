@@ -129,6 +129,14 @@ dependencies {
     implementation(libs.hilt.android)  // Hilt Android
     kapt(libs.hilt.compiler)
 
+    // admob
+    implementation(libs.play.services.ads)
+
+    implementation(libs.guava)
+
+    // lottie
+    implementation(libs.lottie.compose)
+
     // coil
     implementation(libs.coil.compose)
 

@@ -49,6 +49,7 @@ import com.galixo.proxy.compose.theme.color_light_text_secondary
 import com.galixo.proxy.compose.theme.color_light_tile
 import com.galixo.proxy.compose.ui.components.CustomTopAppBar
 import com.galixo.proxy.compose.ui.components.LoadingDialog
+import com.galixo.proxy.compose.ui.dialogs.FeedbackSuccessDialog
 import com.galixo.proxy.extension.toast
 
 @Composable
@@ -58,6 +59,7 @@ fun FeedbackScreen(
 ) {
     val context = LocalContext.current
     val (isDialogVisible, setDialogVisible) = remember { mutableStateOf(false) }
+    var showSuccessDialog by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -73,16 +75,11 @@ fun FeedbackScreen(
                 modifier = Modifier.padding(paddingValues),
                 onFeedbackSubmit = { feedback ->
                     setDialogVisible(true)
-                    context.toast("Submitting feedback...")
                     viewModel.sendFeedback(feedback,
                         callback = {
                             if (it) {
-                                context.toast("Feedback submitted: $feedback")
                                 setDialogVisible(false)
-                                /*
-                                activity?.showFeedbackSuccessDialog {
-                                    findNavController().popBackStack()
-                                }*/
+                                showSuccessDialog = true
                             } else {
                                 setDialogVisible(false)
                                 val failedMessage = ContextCompat.getString(
@@ -100,6 +97,15 @@ fun FeedbackScreen(
 
     if (isDialogVisible) {
         LoadingDialog(onDismissRequest = {})
+    }
+
+    if (showSuccessDialog) {
+        FeedbackSuccessDialog(
+            onBackToHome = {
+                showSuccessDialog = false
+                onBackPressed()
+            }
+        )
     }
 }
 
