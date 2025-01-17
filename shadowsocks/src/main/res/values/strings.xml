@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <string name="service_mode_proxy">Proxy only</string>
+  <string name="service_mode_vpn">VPN</string>
+  <string name="service_mode_transproxy">Transproxy</string>
+
+  <string name="service_vpn">VPN Service</string>
+  <string name="service_proxy">Proxy Service</string>
+  <string name="service_transproxy">Transproxy Service</string>
+  <string name="vpn_permission_denied">Permission denied to create a VPN service</string>
+  <string name="service_failed">Failed to connect the remote server</string>
+  <string name="proxy_empty">Proxy/Password should not be empty</string>
+  <string name="traffic">%1$s↑\t%2$s↓</string>
+  <string name="speed">%s/s</string>
+  <string name="stop">Stop</string>
+  <string name="reboot_required">Failed to start VPN service. You might need to reboot your device.</string>
+  <string name="vpn_connected">Connected, tap to check connection</string>
+  <string name="connection_test_available">Success: HTTPS handshake took %dms</string>
+  <string name="connection_test_testing">Testing…</string>
+  <string name="connection_test_error_status_code">Error code: #%d</string>
+  <string name="connection_test_error">Fail to detect internet connection: %s</string>
+  <string name="plugin_disabled">Disabled</string>
+  <string name="plugin_unknown">Unknown plugin %s</string>
+  <string name="forward_success">Shadowsocks started.</string>
+  <string name="connection_test_fail">Internet Unavailable</string>
+  <string name="start_service_default">Connect to the current server</string>
+  <string name="start_service">Connect to %s</string>
+  <string name="stop_service">Switch to %s</string>
+</resources>

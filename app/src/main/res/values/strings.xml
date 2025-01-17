@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">Cat-Proxy</string>
+    <string name="language">Language</string>
+    <string name="restore_purchase">Restore Purchase</string>
+    <string name="split_tunneling">Split Tunneling</string>
+    <string name="feedback">Feedback</string>
+    <string name="server_not_available">Servers not available!</string>
+    <string name="terms_and_conditions_summary">For further information, please check out our Privacy Policy and Terms and Conditions</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="terms_and_conditions">Terms and Conditions</string>
+    <string name="agree_and_continue"><![CDATA[Agree & Continue]]></string>
+    <string name="agreement_text">We are committed to protecting your privacy with a strict no-logs policy. This means we do not access, track, or retain any of your personal data. Additionally, we fully comply with all applicable data privacy laws to guarantee your information remains secure and confidential.</string>
+    <string name="back">Back</string>
+    <string name="locations">Locations</string>
+    <string name="failed_to_send_feedback">Failed to send feedback!</string>
+    <string name="faqs">FAQs</string>
+    <string name="no_feedback">Describe at least one issue</string>
+    <string name="more">More</string>
+    <string name="feedback_title">What issues did you face?</string>
+    <string name="tap_to_connect">Tap to Connect</string>
+    <string name="check_current_location">Check Current Location</string>
+    <string name="share_with_friends">Share with Friends</string>
+    <string name="rate_us">Rate Us</string>
+    <string name="hint_apps">Search apps...</string>
+    <string name="hint_locations">Search Locations...</string>
+    <string name="close">Close</string>
+    <string name="tunneling_info_text">All apps use VPN by default , you can disable VPN for the apps you want, the deselected apps will not use the VPN connection.</string>
+    <string name="hint_languages">Search Language...</string>
+</resources>
