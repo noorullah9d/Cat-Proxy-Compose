@@ -4,24 +4,27 @@ import ai.galixo.proxy.R
 import ai.galixo.proxy.navigation.Destinations
 import ai.galixo.proxy.presentation.components.FreeTrialFooter
 import ai.galixo.proxy.ui.theme.CatTheme
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -48,20 +51,52 @@ fun AgreementScreen(
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            /*LottieAnimation(
-                modifier = Modifier.size(250.dp),
-                animationRes = R.raw.anim_splash,
-                iterations = LottieConstants.IterateForever
-            )*/
             Box(
                 modifier = Modifier.fillMaxWidth().weight(1f),
                 contentAlignment = Alignment.Center
             ) {
-                Image(
-                    modifier = Modifier.size(220.dp),
-                    painter = painterResource(id = R.drawable.ic_app_name),
-                    contentDescription = "App Logo"
-                )
+                // View pager goes here
+                val pagerState = rememberPagerState(pageCount = { 3 })
+                HorizontalPager(state = pagerState) { page ->
+                    when (page) {
+                        0 -> OnboardingPage(
+                            title = stringResource(R.string.title_onboarding_1),
+                            description = stringResource(R.string.desc_onboarding_1),
+                            animRes = R.raw.anim_onboarding_1
+                        )
+                        1 -> OnboardingPage(
+                            title = stringResource(R.string.title_onboarding_2),
+                            description = stringResource(R.string.desc_onboarding_2),
+                            animRes = R.raw.anim_onboarding_2
+                        )
+                        2 -> OnboardingPage(
+                            title = stringResource(R.string.title_onboarding_3),
+                            description = stringResource(R.string.desc_onboarding_3),
+                            animRes = R.raw.anim_onboarding_3
+                        )
+                    }
+                }
+
+                Row(
+                    Modifier
+                        .wrapContentHeight()
+                        .fillMaxWidth()
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 8.dp),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    repeat(pagerState.pageCount) { iteration ->
+                        val color = if (pagerState.currentPage == iteration) CatTheme.colorScheme.primary else CatTheme.colorScheme.divider
+                        Box(
+                            modifier = Modifier
+                                .padding(4.dp)
+                                .clip(CatTheme.shape.ad)
+                                .background(color)
+                                .width(16.dp)
+                                .height(4.dp)
+                        )
+                    }
+                }
             }
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -71,8 +106,7 @@ fun AgreementScreen(
                 style = CatTheme.typography.regularText,
                 color = CatTheme.colorScheme.textSecondary,
                 textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .padding(vertical = 16.dp)
+                modifier = Modifier.padding(bottom = 16.dp)
             )
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -106,7 +140,7 @@ fun AgreementScreen(
                 Spacer(modifier = Modifier.height(10.dp))
 
                 FreeTrialFooter(
-                    modifier = Modifier.padding(bottom = 32.dp),
+                    modifier = Modifier.padding(bottom = 16.dp),
                     clickableTextColor = CatTheme.colorScheme.primary,
                     textStyle = CatTheme.typography.smallText.copy(
                         color = CatTheme.colorScheme.textSecondary,

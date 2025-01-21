@@ -82,6 +82,9 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
+    // accompanist pager
+    implementation(libs.accompanist.pager)
+
     //room
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)

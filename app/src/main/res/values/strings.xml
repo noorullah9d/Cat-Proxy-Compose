@@ -31,4 +31,10 @@
     <string name="remaining_rewarded_time">Remaining Rewarded Time</string>
     <string name="establishing_secure_tunnel">Establishing a secure tunnel...</string>
     <string name="connection_in_progress">Connection in progress...</string>
+    <string name="title_onboarding_1">Ultra Fast Speed</string>
+    <string name="desc_onboarding_1">Enjoy blazing-fast connections for streaming, gaming, and browsing.</string>
+    <string name="title_onboarding_2">Custom VPN Connections</string>
+    <string name="desc_onboarding_2">Select which apps use the VPN and which bypass it for direct access.</string>
+    <string name="title_onboarding_3">Multiple Global Servers</string>
+    <string name="desc_onboarding_3">Access a global network of VPN servers and switch between locations easily.</string>
 </resources>
