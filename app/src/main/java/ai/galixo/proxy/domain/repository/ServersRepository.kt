@@ -2,6 +2,7 @@ package ai.galixo.proxy.domain.repository
 
 import ai.galixo.proxy.utils.Result
 import com.github.shadowsocks.preference.ServerModel
+import com.github.shadowsocks.utils.DataTransferModel
 import kotlinx.coroutines.flow.Flow
 
 interface ServersRepository {
@@ -21,6 +22,10 @@ interface ServersRepository {
     fun getLastConnectedServer(): ServerModel?
 
     fun setLastConnectedServer(serverModel: ServerModel)
+
+    fun getElapsedTime(): String
+
+    fun getDataUsed(): DataTransferModel
 }
 
 

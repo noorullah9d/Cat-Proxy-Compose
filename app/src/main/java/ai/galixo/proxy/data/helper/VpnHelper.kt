@@ -1,6 +1,7 @@
 package ai.galixo.proxy.data.helper
 
 import ai.galixo.proxy.domain.model.ConnectionStatus
+import ai.galixo.proxy.domain.model.Stats
 import ai.galixo.proxy.utils.extensions.hasNotificationPermission
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -43,7 +44,9 @@ open class VpnHelper(
         override fun onReceive(context: Context?, intent: Intent?) {
             if (context == null || intent == null) return
             val time = intent.getStringExtra("duration") ?: ""
-            onTimeReceived(ConnectionTime(time))
+            val uploadSpeed = intent.getStringExtra("upload_speed") ?: ""
+            val downloadSpeed = intent.getStringExtra("download_speed") ?: ""
+            onStatesReceived(Stats(time, downloadSpeed, uploadSpeed))
         }
     }
 
@@ -59,7 +62,7 @@ open class VpnHelper(
     }
 
     private fun prepareVpn() {
-        Timber.d("HomeScreen: prepareVpn----has connection started= ${hasConnectionStarted()}")
+        Timber.d("VpnHelper: prepareVpn----has connection started= ${hasConnectionStarted()}")
         if (!hasConnectionStarted()) {
             if (context.hasNotificationPermission()) {
                 try {
@@ -83,7 +86,7 @@ open class VpnHelper(
         }
 //        context.postAnalytics(CONNECTION_SUCCESS + "_${selectedServer?.countryName}")
         selectedServer?.let { Core.setServerModel(it) }
-        Timber.d("HomeScreen: startVpn selected server= $selectedServer")
+        Timber.d("VpnHelper: startVpn selected server= $selectedServer")
         Core.startService()
         /*CoroutineScope(Dispatchers.Main).launch {
             delay(1000)
@@ -113,7 +116,7 @@ open class VpnHelper(
 
     open fun onConnectivityStatusChanged(connectionStatus: ConnectionStatus) {}
 
-    open fun onTimeReceived(time: ConnectionTime) {}
+    open fun onStatesReceived(stats: Stats){}
 
     fun mapToVpnConnectionStatus(state: String): ConnectionStatus {
         return when (state) {
@@ -196,6 +199,5 @@ open class VpnHelper(
 
     override fun trafficUpdated(profileId: Long, stats: TrafficStats) {
         super.trafficUpdated(profileId, stats)
-        Timber.d("$profileId--$stats")
     }
 }

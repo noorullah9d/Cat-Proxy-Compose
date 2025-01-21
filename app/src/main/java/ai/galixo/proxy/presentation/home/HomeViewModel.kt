@@ -1,6 +1,5 @@
 package ai.galixo.proxy.presentation.home
 
-import ai.galixo.proxy.data.helper.ConnectionTime
 import ai.galixo.proxy.domain.model.ConnectionStatus
 import ai.galixo.proxy.domain.model.Stats
 import ai.galixo.proxy.domain.repository.ServersRepository
@@ -25,8 +24,7 @@ class HomeViewModel @Inject constructor(
     private val connectionStatusStateFlow: MutableStateFlow<ConnectionStatus> =
         MutableStateFlow(ConnectionStatus.UNKNOWN)
 
-    private val statsStateFlow: MutableStateFlow<Stats> =
-        MutableStateFlow(Stats("00 : 00 : 00"))
+    val vpnTrafficStatsFlow: MutableStateFlow<Stats> = MutableStateFlow(Stats())
 
     val connectionStatus: StateFlow<ConnectionStatus> = connectionStatusStateFlow.stateIn(
         viewModelScope,
@@ -110,13 +108,13 @@ class HomeViewModel @Inject constructor(
         statsJob?.cancel()
         statsJob = null
         statsJob = viewModelScope.launch {
-            statsStateFlow.collect {
+            /*vpnTimerFlow.collect {
                 updateUi(
                     HomeUiState.Time(
                         it.connectionTime
                     )
                 )
-            }
+            }*/
         }
     }
 
@@ -150,8 +148,8 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun updateTime(time: ConnectionTime) {
-        statsStateFlow.tryEmit(Stats(time.time))
+    fun updateTrafficStats(stats: Stats) {
+        vpnTrafficStatsFlow.tryEmit(stats)
     }
 
     fun getCurrentSelectedServer(): ServerModel? {
@@ -174,7 +172,7 @@ class HomeViewModel @Inject constructor(
                 }
 
                 ConnectionStatus.DISCONNECTED, ConnectionStatus.UNKNOWN, ConnectionStatus.STOP_CONNECTION -> {
-                    Timber.d("HomeScreen: emitting new connection...")
+                    Timber.d("HomeViewModel: emitting new connection...")
                     connectionStatusStateFlow.emit(
                         ConnectionStatus.NEW_CONNECTION
                     )

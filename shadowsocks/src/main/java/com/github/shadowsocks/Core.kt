@@ -204,7 +204,7 @@ object Core  {
     }
 
     fun startService() {
-        Timber.d("HomeScreen: start service")
+        Timber.d("Core: start service")
         ContextCompat.startForegroundService(
             app,
             Intent(app, ShadowsocksConnection.serviceClass).apply {

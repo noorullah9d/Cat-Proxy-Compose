@@ -8,6 +8,11 @@ val typography = CatTypography(
     toolbarTitle = TextStyle(
         fontFamily = OpenSans,
         fontWeight = FontWeight.Bold,
+        fontSize = 30.sp
+    ),
+    timerText = TextStyle(
+        fontFamily = OpenSans,
+        fontWeight = FontWeight.Bold,
         fontSize = 22.sp
     ),
     buttonText = TextStyle(

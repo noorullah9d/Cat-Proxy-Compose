@@ -39,6 +39,7 @@ import com.github.shadowsocks.aidl.IShadowsocksServiceCallback
 import com.github.shadowsocks.aidl.TrafficStats
 import com.github.shadowsocks.utils.Action
 import com.github.shadowsocks.utils.DataTransferModel
+import timber.log.Timber
 
 /**
  * User can customize visibility of notification since Android 8.
@@ -58,6 +59,7 @@ class ServiceNotification(
         object : IShadowsocksServiceCallback.Stub() {
             override fun stateChanged(state: Int, profileName: String?, msg: String?) {}   // ignore
             override fun trafficUpdated(profileId: Long, stats: TrafficStats) {
+                Timber.d("ServiceNotification: traffic stats= $stats")
 
                 BaseService.totalDataTransferModel = DataTransferModel(stats.rxTotal + stats.txTotal)
                 if (profileId != 0L) return

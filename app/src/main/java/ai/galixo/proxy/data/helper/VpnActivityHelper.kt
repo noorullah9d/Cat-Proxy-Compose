@@ -1,6 +1,7 @@
 package ai.galixo.proxy.data.helper
 
 import ai.galixo.proxy.domain.model.ConnectionStatus
+import ai.galixo.proxy.domain.model.Stats
 import ai.galixo.proxy.presentation.dialogs.showNotificationPermissionDialog
 import ai.galixo.proxy.presentation.home.HomeViewModel
 import ai.galixo.proxy.utils.extensions.hasNotificationPermission
@@ -68,7 +69,7 @@ class VpnActivityHelper(private val activity: ComponentActivity) : VpnHelper(act
                 connectViewModel.getStatus()
                 connectViewModel.getStats()
                 connectViewModel.connectionStatus.collect { state ->
-                    Timber.d("HomeScreen: connection status helper= $state")
+                    Timber.d("VpnActivityHelper: connection status helper= $state")
 
                     when (state) {
                         ConnectionStatus.NEW_CONNECTION -> {
@@ -171,14 +172,9 @@ class VpnActivityHelper(private val activity: ComponentActivity) : VpnHelper(act
         connectViewModel.updateState(connectionStatus)
     }
 
-    /*override fun onStatsReceived(stats: Stats) {
-        super.onStatsReceived(stats)
-
-    }*/
-
-    override fun onTimeReceived(time: ConnectionTime) {
-        super.onTimeReceived(time)
-        connectViewModel.updateTime(time)
+    override fun onStatesReceived(stats: Stats) {
+        super.onStatesReceived(stats)
+        connectViewModel.updateTrafficStats(stats)
     }
 
     override fun onConnectionStatusChanged() {

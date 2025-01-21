@@ -28,6 +28,7 @@ import android.os.Build
 import android.os.IBinder
 import android.os.RemoteCallbackList
 import android.os.RemoteException
+import android.text.format.Formatter
 import androidx.core.content.ContextCompat
 import com.github.shadowsocks.Core
 import com.github.shadowsocks.Core.app
@@ -70,6 +71,7 @@ import java.net.URLConnection
 object BaseService {
     var elapsedTime = 0L
     var totalDataTransferModel = DataTransferModel()
+    var dataTransferModel = DataTransferModel()
     var isStarted = false
 
     private var timerListener: TimerListener = TimerListenerImpl()
@@ -171,6 +173,8 @@ object BaseService {
                     broadcast { item ->
                         if (bandwidthListeners.contains(item.asBinder())) {
                             stats.forEach { (id, stats) -> item.trafficUpdated(id, stats) }
+                            dataTransferModel.upload = sum.txRate
+                            dataTransferModel.download = sum.rxRate
                             item.trafficUpdated(0, sum)
                         }
                     }
@@ -211,6 +215,8 @@ object BaseService {
                         )
                     }
                 }
+                dataTransferModel.upload = sum.txRate
+                dataTransferModel.download = sum.rxRate
                 cb.trafficUpdated(0, sum)
             }
         }
@@ -414,7 +420,7 @@ object BaseService {
                     method = serverMethod
                 )
 
-                Timber.d("HomeScreen: selectedProfile: name= ${profile.formattedName}\nip= ${profile.host}\npassword= ${profile.password}\nencryption= ${profile.method}")
+                Timber.d("BaseService: selectedProfile: name= ${profile.formattedName}\nip= ${profile.host}\npassword= ${profile.password}\nencryption= ${profile.method}")
                 try {
                     data.proxy = ProxyInstance(profile)
                     data.udpFallback =
@@ -473,7 +479,24 @@ object BaseService {
                             data.changeState(State.Connected)
                             timerListener.startListening(
                                 time = { time ->
-                                    sendLocalBroadcast(applicationContext, time)
+                                    sendLocalBroadcast(
+                                        applicationContext,
+                                        time,
+                                        applicationContext.getString(
+                                            R.string.speed,
+                                            Formatter.formatFileSize(
+                                                applicationContext,
+                                                dataTransferModel.upload
+                                            )
+                                        ),
+                                        applicationContext.getString(
+                                            R.string.speed,
+                                            Formatter.formatFileSize(
+                                                applicationContext,
+                                                dataTransferModel.download
+                                            )
+                                        )
+                                    )
                                 },
                                 onTimeEnded = {
                                     stopService()
@@ -540,9 +563,11 @@ object BaseService {
             }
         }
 
-        private fun sendLocalBroadcast(context: Context, duration: String) {
+        private fun sendLocalBroadcast(context: Context, duration: String, uploadSpeed: String, downloadSpeed: String) {
             val intent = Intent("statsState").apply {
                 putExtra("duration", duration)
+                putExtra("upload_speed", uploadSpeed)
+                putExtra("download_speed", downloadSpeed)
             }
             intent.setPackage(context.packageName)
             context.sendBroadcast(intent)

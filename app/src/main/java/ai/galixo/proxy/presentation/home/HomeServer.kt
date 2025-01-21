@@ -26,7 +26,7 @@ import com.github.shadowsocks.preference.ServerModel
 
 @Composable
 fun HomeServer(
-    server: ServerModel,
+    server: ServerModel?,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -50,7 +50,7 @@ fun HomeServer(
             verticalAlignment = Alignment.CenterVertically
         ) {
             FlagImage(
-                flagCode = server.flag,
+                flagCode = server?.flag,
                 modifier = Modifier
                     .padding(horizontal = 4.dp, vertical = 6.dp)
                     .size(32.dp)
@@ -61,7 +61,7 @@ fun HomeServer(
 
             // Server name
             Text(
-                text = server.countryName,
+                text = server!!.countryName,
                 style = CatTheme.typography.itemTitle,
                 color = CatTheme.colorScheme.textPrimary,
                 modifier = Modifier.weight(1f) // Push the arrow to the end

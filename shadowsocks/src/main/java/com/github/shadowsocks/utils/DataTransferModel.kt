@@ -4,6 +4,6 @@ import androidx.annotation.Keep
 
 @Keep
 data class DataTransferModel(
-    val download: Long = 0L,
-    val upload: Long = 0L
+    var download: Long = 0L,
+    var upload: Long = 0L
 )

@@ -70,14 +70,15 @@ fun SplashContent() {
             .background(CatTheme.colorScheme.primary)
             .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 52.dp)
     ) {
-
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
         ) {
             LottieAnimation(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.Center),
                 animationRes = R.raw.anim_splash,
                 iterations = LottieConstants.IterateForever
             )

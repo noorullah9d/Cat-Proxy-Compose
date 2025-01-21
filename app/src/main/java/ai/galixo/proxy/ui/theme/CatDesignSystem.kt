@@ -30,6 +30,7 @@ data class CatColorScheme(
 // typography
 data class CatTypography(
     val toolbarTitle: TextStyle,
+    val timerText: TextStyle,
     val buttonText: TextStyle,
     val itemTitle: TextStyle,
     val regularText: TextStyle,
@@ -81,6 +82,7 @@ val LocalCatColorScheme = staticCompositionLocalOf {
 val LocalCatTypography = staticCompositionLocalOf {
     CatTypography(
         toolbarTitle = TextStyle.Default,
+        timerText = TextStyle.Default,
         buttonText = TextStyle.Default,
         itemTitle = TextStyle.Default,
         regularText = TextStyle.Default,

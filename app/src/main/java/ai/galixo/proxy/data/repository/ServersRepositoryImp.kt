@@ -14,9 +14,12 @@ import ai.galixo.proxy.domain.repository.ServersRepository
 import ai.galixo.proxy.utils.Result
 import ai.galixo.proxy.utils.extensions.isOnline
 import android.content.Context
+import com.github.shadowsocks.bg.BaseService
+import com.github.shadowsocks.extensions.formatTime
 import com.github.shadowsocks.preference.PrefUtils.lastSelectedProfile
 import com.github.shadowsocks.preference.PrefUtils.selectedProfile
 import com.github.shadowsocks.preference.ServerModel
+import com.github.shadowsocks.utils.DataTransferModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.Flow
@@ -101,6 +104,10 @@ class ServersRepositoryImp @Inject constructor(
     override fun setLastConnectedServer(serverModel: ServerModel) {
         lastSelectedProfile = serverModel
     }
+
+    override fun getElapsedTime(): String = formatTime(BaseService.elapsedTime)
+
+    override fun getDataUsed(): DataTransferModel = BaseService.totalDataTransferModel
 
     private suspend fun handleServerFetchFailure(initialLocalList: List<ServerEntity>) {
         if (initialLocalList.isEmpty()) {

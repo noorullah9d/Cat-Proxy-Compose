@@ -26,4 +26,9 @@
     <string name="close">Close</string>
     <string name="tunneling_info_text">All apps use VPN by default , you can disable VPN for the apps you want, the deselected apps will not use the VPN connection.</string>
     <string name="hint_languages">Search Language...</string>
+    <string name="connecting">Connecting...</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="remaining_rewarded_time">Remaining Rewarded Time</string>
+    <string name="establishing_secure_tunnel">Establishing a secure tunnel...</string>
+    <string name="connection_in_progress">Connection in progress...</string>
 </resources>
