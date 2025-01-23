@@ -7,6 +7,7 @@ import ai.galixo.proxy.presentation.home.HomeScreen
 import ai.galixo.proxy.presentation.home.HomeViewModel
 import ai.galixo.proxy.presentation.iap.PremiumScreen
 import ai.galixo.proxy.presentation.languages.LanguageScreen
+import ai.galixo.proxy.presentation.location.LocationScreen
 import ai.galixo.proxy.presentation.servers.ServersScreen
 import ai.galixo.proxy.presentation.splash.SplashScreen
 import ai.galixo.proxy.presentation.tunneling.SplitTunnelingScreen
@@ -72,7 +73,9 @@ fun AppNavigation(
                         onBackPressed = { navController.popBackStack() }
                     )
 
-                    Destinations.CurrentLocationScreen -> {}
+                    Destinations.CurrentLocationScreen -> LocationScreen {
+                        navController.popBackStack()
+                    }
 
                     Destinations.LanguageSheet -> {}
 

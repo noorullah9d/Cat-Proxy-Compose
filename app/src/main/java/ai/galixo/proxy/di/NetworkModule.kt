@@ -59,6 +59,19 @@ object NetworkModule {
             .build()
     }
 
+    @LocationApiRetrofit
+    @Provides
+    @Singleton
+    fun provideLocationRetrofit(
+        okHttpClient: OkHttpClient,
+        gson: Gson
+    ): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://api.bigdatacloud.net/")
+            .client(okHttpClient)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+    }
 
     @Provides
     @Singleton

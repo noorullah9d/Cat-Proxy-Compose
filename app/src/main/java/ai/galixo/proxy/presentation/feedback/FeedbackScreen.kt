@@ -134,12 +134,6 @@ fun FeedbackContent(
             ),
             color = CatTheme.colorScheme.textPrimary
         )
-        /*Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            text = "Tell us what can be improved?",
-            style = MaterialTheme.typography.bodySmall,
-            color = CatTheme.colorScheme.textPrimary
-        )*/
         Spacer(modifier = Modifier.height(16.dp))
         FeedbackChips(
             categories = categories,
@@ -194,8 +188,7 @@ fun FeedbackChips(
                 label = {
                     Text(
                         text = category,
-                        style = CatTheme.typography.normal,
-                        color = CatTheme.colorScheme.textPrimary
+                        style = CatTheme.typography.normal
                     )
                 },
                 colors = FilterChipDefaults.filterChipColors(

@@ -20,10 +20,11 @@ fun FlagImage(
     // Use Coil to load the flag image from a URL
     val imagePainter = rememberAsyncImagePainter(
         model = ImageRequest.Builder(LocalContext.current)
-            .data("https://cdn.jsdelivr.net/gh/hjnilsson/country-flags@master/png250px/$flagCode.png")
+//            .data("https://cdn.jsdelivr.net/gh/hjnilsson/country-flags@master/png250px/$flagCode.png")
+            .data("https://flagcdn.com/w320/$flagCode.png")
             .crossfade(true)
-            .placeholder(R.drawable.en) // Placeholder image while loading
-//            .error(R.drawable.ic_globe_alt) // Error image if loading fails
+            .placeholder(R.drawable.ic_globe) // Placeholder image while loading
+            .error(R.drawable.ic_globe)
             .build()
     )
 
@@ -32,7 +33,7 @@ fun FlagImage(
         painter = imagePainter,
         contentDescription = null,
         modifier = modifier,
-        contentScale = ContentScale.Companion.Crop
+        contentScale = ContentScale.Crop
     )
 }
 

@@ -1,5 +1,6 @@
 [versions]
 accompanistPager = "0.36.0"
+accompanistPermissions = "0.24.10-beta"
 agp = "8.7.3"
 coilCompose = "2.6.0"
 desugar_jdk_libs = "2.1.4"
@@ -14,7 +15,10 @@ activityCompose = "1.9.3"
 composeBom = "2024.12.01"
 hiltAndroid = "2.51.1"
 lottieCompose = "6.1.0"
+mapsCompose = "4.4.1"
+mapsComposeUtils = "4.4.1"
 navigationCompose = "2.7.0"
+playServicesLocation = "21.3.0"
 runtimeLivedata = "1.7.6"
 appcompat = "1.7.0"
 material = "1.12.0"
@@ -23,6 +27,7 @@ roomKtx = "2.6.1"
 
 [libraries]
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanistPager" }
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleRuntimeKtx" }
@@ -48,7 +53,10 @@ hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltA
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltAndroid" }
 lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottieCompose" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+maps-compose = { module = "com.google.maps.android:maps-compose", version.ref = "mapsCompose" }
+maps-compose-utils = { module = "com.google.maps.android:maps-compose-utils", version.ref = "mapsComposeUtils" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomKtx" }

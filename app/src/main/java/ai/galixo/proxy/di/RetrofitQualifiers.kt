@@ -8,4 +8,8 @@ annotation class BaseApiRetrofit
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
+annotation class LocationApiRetrofit
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
 annotation class SearchApiRetrofit

@@ -82,6 +82,10 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
+    // Google Maps Compose library
+    implementation(libs.maps.compose)
+//    implementation(libs.maps.compose.utils)
+
     // accompanist pager
     implementation(libs.accompanist.pager)
 
