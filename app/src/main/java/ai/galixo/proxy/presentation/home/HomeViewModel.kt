@@ -39,6 +39,13 @@ class HomeViewModel @Inject constructor(
             null
         )
 
+    private val _shouldReconnect = MutableStateFlow(false)  // Initially false
+    val shouldReconnect: StateFlow<Boolean> get() = _shouldReconnect
+
+    fun shouldReconnect(should: Boolean) {
+        _shouldReconnect.value = should
+    }
+
     private var statusJob: Job? = null
     private var statsJob: Job? = null
 

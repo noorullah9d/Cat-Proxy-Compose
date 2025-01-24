@@ -7,7 +7,6 @@ import ai.galixo.proxy.presentation.base.UiState
 import ai.galixo.proxy.presentation.components.LottieAnimation
 import ai.galixo.proxy.ui.theme.CatTheme
 import ai.galixo.proxy.utils.extensions.toast
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,9 +18,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -57,10 +54,11 @@ fun HomeScreen(
     val homeUiState = remember { mutableStateOf<UiState<HomeUiState>>(UiState()) }
     val preConnectionState = remember { mutableStateOf<HomeUiState>(HomeUiState.Disconnected) }
     val vpnTrafficStats by viewModel.vpnTrafficStatsFlow.collectAsState()
+    val shouldReconnect by viewModel.shouldReconnect.collectAsState()
     val context = LocalContext.current
     val progressToast = stringResource(R.string.connection_in_progress)
 
-    Timber.d("HomeScreen: traffic stats = $vpnTrafficStats")
+    Timber.d("HomeScreen: shouldReconnect= $shouldReconnect")
 
     LaunchedEffect(Unit) {
         viewModel.getPreConnectionStatus { state ->
@@ -71,6 +69,14 @@ fun HomeScreen(
     LaunchedEffect(Unit) {
         viewModel.uiState.collectLatest { state ->
             homeUiState.value = state
+        }
+    }
+
+    // Handle reconnect action
+    LaunchedEffect(shouldReconnect) {
+        if (shouldReconnect) {
+            viewModel.shouldReconnect(false)
+            viewModel.reconnect()
         }
     }
 
@@ -231,248 +237,6 @@ fun HomeContent(
         Box(
             modifier = Modifier
                 .height(80.dp)
-                .fillMaxWidth()
-                .background(
-                    color = CatTheme.colorScheme.adBackground,
-                    shape = CatTheme.shape.ad
-                )
-        ) {}
-    }
-}
-
-@Composable
-fun DisconnectedContent(
-    modifier: Modifier,
-    navController: NavController,
-    selectedServer: ServerModel?,
-    preConnectionState: MutableState<HomeUiState>?,
-    connectVpn: () -> Unit
-) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(CatTheme.colorScheme.background)
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        LottieAnimation(
-            modifier = Modifier
-                .size(250.dp)
-                .weight(1f),
-            animationRes = R.raw.anim_not_connected,
-            iterations = LottieConstants.IterateForever
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        OutlinedButton(
-            onClick = {
-                when (preConnectionState?.value) {
-                    is HomeUiState.Disconnected -> {
-                        connectVpn()
-                    }
-
-                    else -> {
-                        Timber.d("HomeScreen: unknown")
-                    }
-                }
-            },
-            modifier = Modifier
-                .padding(bottom = 10.dp),
-            border = BorderStroke(1.dp, CatTheme.colorScheme.primary),
-            shape = CatTheme.shape.button,
-            colors = ButtonDefaults.outlinedButtonColors(
-                containerColor = CatTheme.colorScheme.background
-            )
-        ) {
-            Text(
-                modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp),
-                text = stringResource(R.string.tap_to_connect),
-                style = CatTheme.typography.itemTitle,
-                color = CatTheme.colorScheme.primary
-            )
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        HomeServer(
-            server = selectedServer ?: ServerModel(
-                countryName = "Unknown",
-                cityName = "",
-                flag = ""
-            ),
-            onClick = {
-                navController.navigate(Destinations.ServersScreen.route)
-            }
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Image(
-            painter = painterResource(id = R.drawable.img_premium_yellow),
-            contentDescription = "",
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable(enabled = true) {
-                    navController.navigate(Destinations.PremiumScreen.route)
-                },
-            contentScale = ContentScale.FillWidth
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Box(
-            modifier = Modifier
-                .height(80.dp)
-                .fillMaxWidth()
-                .background(
-                    color = CatTheme.colorScheme.adBackground,
-                    shape = CatTheme.shape.ad
-                )
-        ) {}
-    }
-}
-
-@Composable
-fun ConnectingContent(
-    modifier: Modifier,
-    selectedServer: ServerModel?
-) {
-    Timber.d("HomeScreen: Recomposing ConnectingContent")
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(CatTheme.colorScheme.background)
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        LottieAnimation(
-            modifier = Modifier
-                .size(250.dp)
-                .weight(1f),
-            animationRes = R.raw.anim_connecting,
-            iterations = LottieConstants.IterateForever
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        OutlinedButton(
-            onClick = {},
-            modifier = Modifier
-                .padding(bottom = 10.dp),
-            border = BorderStroke(1.dp, CatTheme.colorScheme.primary),
-            shape = CatTheme.shape.button,
-            colors = ButtonDefaults.outlinedButtonColors(
-                containerColor = CatTheme.colorScheme.background
-            )
-        ) {
-            Text(
-                modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp),
-                text = stringResource(R.string.connecting),
-                style = CatTheme.typography.itemTitle,
-                color = CatTheme.colorScheme.primary
-            )
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        HomeServer(
-            server = selectedServer ?: ServerModel(
-                countryName = "Unknown",
-                cityName = "",
-                flag = ""
-            ),
-            onClick = {}
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Image(
-            painter = painterResource(id = R.drawable.img_premium_yellow),
-            contentDescription = "",
-            modifier = Modifier.fillMaxWidth(),
-            contentScale = ContentScale.FillWidth
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Box(
-            modifier = Modifier
-                .height(80.dp)
-                .fillMaxWidth()
-                .background(
-                    color = CatTheme.colorScheme.adBackground,
-                    shape = CatTheme.shape.ad
-                )
-        ) {}
-    }
-}
-
-@Composable
-fun ConnectedContent(
-    modifier: Modifier,
-    navController: NavController,
-    selectedServer: ServerModel?,
-    preConnectionState: MutableState<HomeUiState>?,
-    disconnectVpn: () -> Unit
-) {
-    Timber.d("HomeScreen: Recomposing ConnectedContent")
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .background(CatTheme.colorScheme.background)
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        LottieAnimation(
-            modifier = Modifier
-                .size(250.dp)
-                .weight(1f),
-            animationRes = R.raw.anim_connected,
-            iterations = LottieConstants.IterateForever
-        )
-        Spacer(modifier = Modifier.height(16.dp))
-        Text(
-            modifier = Modifier,
-            text = stringResource(R.string.remaining_rewarded_time),
-            style = CatTheme.typography.itemTitle,
-            color = CatTheme.colorScheme.textTertiary
-        )
-        Spacer(modifier = Modifier.height(4.dp))
-        Text(
-            modifier = Modifier,
-            text = "00:18:03",
-            style = CatTheme.typography.toolbarTitle,
-            color = CatTheme.colorScheme.textPrimary
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        OutlinedButton(
-            onClick = {
-                when (preConnectionState?.value) {
-                    is HomeUiState.Connected -> {
-                        disconnectVpn()
-                    }
-
-                    else -> {
-                        Timber.d("HomeScreen: unknown")
-                    }
-                }
-            },
-            modifier = Modifier
-                .padding(bottom = 10.dp),
-            border = BorderStroke(1.dp, CatTheme.colorScheme.divider),
-            shape = CatTheme.shape.button,
-            colors = ButtonDefaults.outlinedButtonColors(
-                containerColor = CatTheme.colorScheme.background
-            )
-        ) {
-            Text(
-                modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp),
-                text = stringResource(R.string.disconnect),
-                style = CatTheme.typography.itemTitle,
-                color = CatTheme.colorScheme.primary
-            )
-        }
-        Spacer(modifier = Modifier.height(16.dp))
-        ConnectedServer(
-            server = selectedServer ?: ServerModel(
-                countryName = "Unknown",
-                cityName = "",
-                flag = ""
-            ),
-            trafficStats = Stats(),
-            onClick = {
-                navController.navigate(Destinations.ServersScreen.route)
-            }
-        )
-        Spacer(modifier = Modifier.height(24.dp))
-        Box(
-            modifier = Modifier
-                .height(120.dp)
                 .fillMaxWidth()
                 .background(
                     color = CatTheme.colorScheme.adBackground,

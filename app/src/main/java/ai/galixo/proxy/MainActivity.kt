@@ -114,6 +114,7 @@ fun MainScreen(
                 ) {
                     // Drawer Header
                     DrawerHeader(
+                        navController = navController,
                         onClose = {
                             scope.launch { drawerState.close() }
                         }

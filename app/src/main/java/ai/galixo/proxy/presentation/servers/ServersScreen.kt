@@ -1,11 +1,14 @@
 package ai.galixo.proxy.presentation.servers
 
 import ai.galixo.proxy.R
+import ai.galixo.proxy.navigation.Destinations
 import ai.galixo.proxy.presentation.components.CenteredCircularProgressIndicator
 import ai.galixo.proxy.presentation.components.CustomTopAppBar
 import ai.galixo.proxy.presentation.components.SearchBar
+import ai.galixo.proxy.presentation.home.HomeViewModel
 import ai.galixo.proxy.ui.theme.CatTheme
 import ai.galixo.proxy.utils.Result
+import ai.galixo.proxy.utils.extensions.toast
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -31,20 +34,27 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import com.github.shadowsocks.bg.BaseService
+import com.github.shadowsocks.preference.PrefUtils
 import com.github.shadowsocks.preference.ServerModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ServersScreen(
+    homeViewModel: HomeViewModel,
     viewModel: ServersViewModel = hiltViewModel(),
+    navController: NavController,
     onBackPressed: () -> Unit
 ) {
     val serverListState = viewModel.serverListState.collectAsState()
+    val context = LocalContext.current
 
     // Swipe refresh state
     var isRefreshing by remember { mutableStateOf(false) }
@@ -109,13 +119,21 @@ fun ServersScreen(
                     isRefreshing = false
                 }
             ) {
+                val alreadyConnected = stringResource(R.string.already_connected)
                 ServersContent(
                     modifier = Modifier.padding(paddingValues),
-                    onBackPressed = onBackPressed,
                     serverListState = serverListState.value,
                     filteredServers = filteredServers,
                     onUpdateServer = { server ->
-                        viewModel.setSelectedServer(server)
+                        if (PrefUtils.selectedProfile?.ipaddress == server.ipaddress  && BaseService.isStarted)
+                            context.toast(alreadyConnected)
+                        else if (server.isPremium) {
+                            navController.navigate(Destinations.PremiumScreen.route)
+                        } else {
+                            viewModel.setSelectedServer(server)
+                            homeViewModel.shouldReconnect(true)
+                            onBackPressed()
+                        }
                     }
                 )
             }
@@ -129,7 +147,6 @@ fun ServersContent(
     serverListState: Result<List<ServerModel>>?,
     filteredServers: List<ServerModel>,
     onUpdateServer: (ServerModel) -> Unit,
-    onBackPressed: () -> Unit,
 ) {
     var shouldShowShimmer by remember { mutableStateOf(true) }
     var shouldShowBannerAd by remember { mutableStateOf(true) }
@@ -168,7 +185,6 @@ fun ServersContent(
                         items(filteredServers) { server ->
                             ServerItem(server = server) {
                                 onUpdateServer(server)
-                                onBackPressed()
                             }
                         }
                     }
@@ -257,19 +273,17 @@ fun ServersPreview() {
             serverListState = Result.Success(dummyServers),
             filteredServers = dummyServers,
             onUpdateServer = { }
-        ) {}
+        )
 
         // Example 2: Loading state (Uncomment to see loading state)
         /*ServersContent(
             viewModel = null,
-            onBackPressed = {},
             serverListState = Result.Loading("")
         )*/
 
         // Example 3: Error state (Uncomment to see error state)
         /*ServersContent(
             viewModel = null,
-            onBackPressed = {},
             serverListState = Result.Error("Failed to load servers")
         )*/
     }

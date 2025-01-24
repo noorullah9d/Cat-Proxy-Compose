@@ -100,6 +100,8 @@ fun AppNavigation(
                     }
 
                     Destinations.ServersScreen -> ServersScreen(
+                        homeViewModel = viewModel,
+                        navController = navController,
                         onBackPressed = {
                             navController.popBackStack()
                         }
