@@ -12,7 +12,6 @@ enum class Destinations(val route: String) {
     ShareApp("share_app"),
     RateUs("rate_us"),
     FeedbackScreen("feedback"),
-    PrivacyPolicy("privacy_policy"),
     FAQsScreen("faqs"),
     PremiumScreen("premium"),
     ServersScreen("servers")

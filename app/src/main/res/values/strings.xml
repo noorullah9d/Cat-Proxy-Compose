@@ -41,4 +41,7 @@
     <string name="failed_to_load_location_data">Failed to load location data</string>
     <string name="no_internet_available">Internet not available</string>
     <string name="already_connected">Already Connected!</string>
+    <string name="subscription_settings">Subscription settings</string>
+    <string name="advanced_settings">Advanced settings</string>
+    <string name="others">Others</string>
 </resources>

@@ -1,7 +1,6 @@
 package ai.galixo.proxy.navigation
 
 import ai.galixo.proxy.presentation.faqs.FAQsScreen
-import ai.galixo.proxy.presentation.splash.AgreementScreen
 import ai.galixo.proxy.presentation.feedback.FeedbackScreen
 import ai.galixo.proxy.presentation.home.HomeScreen
 import ai.galixo.proxy.presentation.home.HomeViewModel
@@ -9,19 +8,16 @@ import ai.galixo.proxy.presentation.iap.PremiumScreen
 import ai.galixo.proxy.presentation.languages.LanguageScreen
 import ai.galixo.proxy.presentation.location.LocationScreen
 import ai.galixo.proxy.presentation.servers.ServersScreen
+import ai.galixo.proxy.presentation.splash.AgreementScreen
 import ai.galixo.proxy.presentation.splash.SplashScreen
 import ai.galixo.proxy.presentation.tunneling.SplitTunnelingScreen
+import ai.galixo.proxy.utils.extensions.toast
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -47,10 +43,10 @@ fun AppNavigation(
                     Destinations.AgreementScreen -> AgreementScreen(
                         navController = navController,
                         onPrivacyPolicyClick = {
-                            openLink(context, "https://www.youtube.com")
+                            openLink(context, "https://galixo.ai/cat-proxy/privacy-policy")
                         },
                         onTermsClick = {
-                            openLink(context, "https://www.yahoo.com")
+                            openLink(context, "https://galixo.ai/cat-proxy/terms-and-conditions")
                         }
                     )
 
@@ -66,7 +62,7 @@ fun AppNavigation(
                     }
 
                     Destinations.ManageSubscription -> {
-                        OpenLink("https://www.google.com", navController)
+                        OpenLink("https://play.google.com/store/account/subscriptions?package=${context.packageName}", navController)
                     }
 
                     Destinations.SplitTunnelingScreen -> SplitTunnelingScreen(
@@ -79,16 +75,16 @@ fun AppNavigation(
 
                     Destinations.LanguageSheet -> {}
 
-                    Destinations.ShareApp -> {}
+                    Destinations.ShareApp -> {
+                        ShareApp(navController)
+                    }
 
-                    Destinations.RateUs -> {}
+                    Destinations.RateUs -> {
+                        OpenLink("https://play.google.com/store/apps/details?id=${context.packageName}", navController)
+                    }
 
                     Destinations.FeedbackScreen -> FeedbackScreen {
                         navController.popBackStack()
-                    }
-
-                    Destinations.PrivacyPolicy -> {
-                        OpenLink("https://www.google.com", navController)
                     }
 
                     Destinations.FAQsScreen -> FAQsScreen {
@@ -126,4 +122,26 @@ fun OpenLink(url: String, navController: NavHostController) {
 fun openLink(context: Context, url: String) {
     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
     context.startActivity(intent)
+}
+
+@Composable
+fun ShareApp(navController: NavHostController) {
+    val context = LocalContext.current
+    val sendIntent = Intent()
+    sendIntent.action = Intent.ACTION_SEND
+    sendIntent.putExtra(
+        Intent.EXTRA_TEXT,
+        "Hey check out my app at: https://play.google.com/store/apps/details?id=${context.packageName}"
+    )
+    sendIntent.type = "text/plain"
+    try {
+        context.startActivity(sendIntent)
+    } catch (e: ActivityNotFoundException) {
+        e.printStackTrace()
+        context.toast("Activity not found!")
+    }
+
+    // Pop the current screen off the stack (if not on Home), and navigate to Home screen
+    // This will remove any screen above the Home screen, so it doesn't appear again when returning.
+    navController.popBackStack(Destinations.HomeScreen.route, inclusive = false)
 }

@@ -11,7 +11,7 @@ android {
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "ai.galixo.proxy"
+        applicationId = "com.free.vpn.unblock.proxy.hotspot.securevpn"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

@@ -5,7 +5,7 @@ import ai.galixo.proxy.navigation.AppNavigation
 import ai.galixo.proxy.navigation.Destinations
 import ai.galixo.proxy.navigation.DrawerHeader
 import ai.galixo.proxy.navigation.DrawerItem
-import ai.galixo.proxy.navigation.getNavItems
+import ai.galixo.proxy.navigation.getGroupedNavItems
 import ai.galixo.proxy.presentation.base.BaseActivity
 import ai.galixo.proxy.presentation.home.HomeViewModel
 import ai.galixo.proxy.presentation.languages.LanguageSelectionSheet
@@ -18,19 +18,26 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
@@ -43,9 +50,11 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.github.shadowsocks.preference.PrefUtils
@@ -94,6 +103,8 @@ fun MainScreen(
     // State for Bottom Sheet
     var openLanguageSheet by rememberSaveable { mutableStateOf(false) }
 
+    val navItems = getGroupedNavItems()
+
     // Track the current route (or destination)
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
@@ -120,7 +131,7 @@ fun MainScreen(
                         }
                     )
                     Spacer(modifier = Modifier.height(0.dp))
-                    getNavItems().forEachIndexed { index, navigationItem ->
+                    /*getNavItems().forEachIndexed { index, navigationItem ->
                         DrawerItem(
                             navigationItem = navigationItem,
                             isSelected = false,
@@ -140,6 +151,73 @@ fun MainScreen(
                                 scope.launch { drawerState.close() }
                             }
                         )
+                    }*/
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        navItems.forEach { group ->
+                            item {
+                                Text(
+                                    text = group.groupName,
+                                    style = CatTheme.typography.semiBold.copy(
+                                        fontSize = 16.sp
+                                    ),
+                                    color = CatTheme.colorScheme.textTertiary,
+                                    modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp)
+                                )
+                            }
+
+                            item {
+                                Surface(
+                                    modifier = Modifier
+                                        .clip(CatTheme.shape.tile)
+                                        .fillMaxWidth()
+                                        .padding(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 16.dp)
+                                        .border(
+                                            width = 1.dp,
+                                            color = CatTheme.colorScheme.divider,
+                                            shape = CatTheme.shape.tile
+                                        ),
+                                    shape = CatTheme.shape.tile,
+                                    color = CatTheme.colorScheme.background,
+                                    shadowElevation = 2.dp,
+                                ) {
+                                    Column(
+                                        modifier = Modifier
+                                    ) {
+                                        group.items.forEachIndexed  { index, navigationItem ->
+                                            DrawerItem(
+                                                navigationItem = navigationItem,
+                                                isSelected = false,
+                                                onClick = {
+                                                    when (navigationItem.route) {
+                                                        Destinations.LanguageSheet.route -> {
+                                                            // Open the language selection sheet
+                                                            openLanguageSheet = true
+                                                        }
+                                                        else -> {
+                                                            // Navigate to the specified route
+                                                            navController.navigate(navigationItem.route)
+                                                        }
+                                                    }
+                                                    // Close the drawer after clicking
+                                                    scope.launch { drawerState.close() }
+                                                }
+                                            )
+                                            // Add divider conditionally based on index and number of items
+                                            if (index < group.items.size - 1) {
+                                                HorizontalDivider(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .padding(horizontal = 16.dp),
+                                                    color = CatTheme.colorScheme.divider
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }

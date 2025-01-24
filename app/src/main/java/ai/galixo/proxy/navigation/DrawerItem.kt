@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.NavigationDrawerItem
-import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -65,7 +64,7 @@ fun DrawerItem(
             )
         },
         modifier = Modifier
-            .padding(NavigationDrawerItemDefaults.ItemPadding)
+            .padding(horizontal = 4.dp, vertical = 8.dp)
             .fillMaxWidth()
     )
 }
