@@ -1,5 +1,6 @@
-package ai.galixo.proxy
+package ai.galixo.proxy.presentation.main
 
+import ai.galixo.proxy.R
 import ai.galixo.proxy.data.helper.VpnActivityHelper
 import ai.galixo.proxy.navigation.AppNavigation
 import ai.galixo.proxy.navigation.Destinations
@@ -63,12 +64,15 @@ import kotlinx.coroutines.launch
 class MainActivity : BaseActivity() {
     private val serversViewModel: ServersViewModel by viewModels()
     private val homeViewModel: HomeViewModel by viewModels()
+    private val mainViewModel: MainViewModel by viewModels()
     private val activityHelper: VpnActivityHelper by lazy {
         VpnActivityHelper(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        mainViewModel.getRemoteConfig() // get ad ids from remote config
         serversViewModel.fetchServers()
         activityHelper.initializeAndObserve()
         setContent {

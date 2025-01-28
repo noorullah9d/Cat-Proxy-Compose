@@ -8,6 +8,9 @@ import android.content.Context
 import ai.galixo.proxy.data.remote.ApiService
 import ai.galixo.proxy.data.repository.FeedbackRepositoryImp
 import ai.galixo.proxy.data.repository.LanguageRepoImpl
+import ai.galixo.proxy.data.repository.RemoteConfigRepositoryImpl
+import ai.galixo.proxy.domain.repository.RemoteConfigRepository
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -38,4 +41,19 @@ object AppModule {
 
     @Provides
     fun provideLanguageRepo(): LanguageRepo = LanguageRepoImpl()
+
+    @Provides
+    @Singleton
+    fun provideFirebaseRemoteConfig(): FirebaseRemoteConfig {
+        return FirebaseRemoteConfig.getInstance()
+    }
+
+    @Singleton
+    @Provides
+    fun provideRemoteConfigRepository(
+        @ApplicationContext context: Context,
+        firebaseRemoteConfig: FirebaseRemoteConfig
+    ): RemoteConfigRepository {
+        return RemoteConfigRepositoryImpl(context, firebaseRemoteConfig)
+    }
 }

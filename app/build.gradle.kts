@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt.android)
+    alias(libs.plugins.google.gms.google.services)
+    alias(libs.plugins.google.firebase.crashlytics)
 }
 
 android {
@@ -28,6 +30,23 @@ android {
 //            resValue("string", "base_url", "https://proxyapiv2.fusionsai.net/")
             resValue("string", "support_url", "https://api.9dtechnologies.dev/api/support/")
 
+            // test ad ids
+            resValue("string", "admob_app_id", "ca-app-pub-3940256099942544~3347511713")
+            resValue("string", "admob_interstitial_id_connection", "ca-app-pub-3940256099942544/1033173712")
+            resValue("string", "admob_interstitial_id_disconnect", "ca-app-pub-3940256099942544/1033173712")
+            resValue("string", "admob_interstitial_id_timer", "ca-app-pub-3940256099942544/1033173712")
+            resValue("string", "admob_interstitial_id_splash", "ca-app-pub-3940256099942544/1033173712")
+            resValue("string", "admob_banner_id_home", "ca-app-pub-3940256099942544/6300978111")
+            resValue("string", "admob_banner_id_servers", "ca-app-pub-3940256099942544/6300978111")
+            resValue("string", "admob_banner_id_connected", "ca-app-pub-3940256099942544/6300978111")
+            resValue("string", "admob_native_id_exit", "ca-app-pub-3940256099942544/2247696110")
+            resValue("string", "admob_native_id_languages", "ca-app-pub-3940256099942544/2247696110")
+            resValue("string", "admob_native_id_home", "ca-app-pub-3940256099942544/2247696110")
+            resValue("string", "admob_app_open_id", "ca-app-pub-3940256099942544/9257395921")
+            resValue("string", "admob_rewarded1_ad_id", "ca-app-pub-3940256099942544/5224354917")
+            resValue("string", "admob_rewarded2_ad_id", "ca-app-pub-3940256099942544/5224354917")
+            resValue("string", "admob_rewarded3_ad_id", "ca-app-pub-3940256099942544/5224354917")
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -38,6 +57,23 @@ android {
 
             resValue("string", "base_url", "https://proxyapiv2.fusionsai.net/")
             resValue("string", "support_url", "https://api.9dtechnologies.dev/api/support/")
+
+            // original ad ids
+            resValue("string", "admob_app_id", "ca-app-pub-7229352898267255~5595091895")
+            resValue("string", "admob_interstitial_id_connection", "ca-app-pub-7229352898267255/1884979347")
+            resValue("string", "admob_interstitial_id_disconnect", "ca-app-pub-7229352898267255/2277005165")
+            resValue("string", "admob_interstitial_id_timer", "ca-app-pub-7229352898267255/7838030679")
+            resValue("string", "admob_interstitial_id_splash", "ca-app-pub-7229352898267255/7698429875")
+            resValue("string", "admob_banner_id_home", "ca-app-pub-7229352898267255/2203156420")
+            resValue("string", "admob_banner_id_servers", "ca-app-pub-7229352898267255/1327891166")
+            resValue("string", "admob_banner_id_connected", "ca-app-pub-7229352898267255/6632188739")
+            resValue("string", "admob_native_id_exit", "ca-app-pub-7229352898267255/1787180533")
+            resValue("string", "admob_native_id_languages", "ca-app-pub-7229352898267255/1797408530")
+            resValue("string", "admob_native_id_home", "ca-app-pub-7229352898267255/7011587059")
+            resValue("string", "admob_app_open_id", "ca-app-pub-7229352898267255/2397554626")
+            resValue("string", "admob_rewarded1_ad_id", "ca-app-pub-7229352898267255/9385203918")
+            resValue("string", "admob_rewarded2_ad_id", "ca-app-pub-7229352898267255/6639621072")
+            resValue("string", "admob_rewarded3_ad_id", "ca-app-pub-7229352898267255/5445958901")
 
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -83,9 +119,14 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
+    // firebase
+    implementation(libs.firebase.crashlytics.ktx)
+    implementation(libs.firebase.analytics.ktx)
+    implementation(libs.firebase.config)
+    implementation(libs.firebase.messaging.ktx)
+
     // Google Maps Compose library
     implementation(libs.maps.compose)
-//    implementation(libs.maps.compose.utils)
 
     // accompanist pager
     implementation(libs.accompanist.pager)

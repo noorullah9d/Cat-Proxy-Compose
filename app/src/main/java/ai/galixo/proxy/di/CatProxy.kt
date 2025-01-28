@@ -2,7 +2,7 @@ package ai.galixo.proxy.di
 
 import ai.galixo.cypherlib.NativeLib
 import ai.galixo.proxy.BuildConfig
-import ai.galixo.proxy.MainActivity
+import ai.galixo.proxy.presentation.main.MainActivity
 import android.app.Application
 import android.content.res.Configuration
 import com.github.shadowsocks.Core

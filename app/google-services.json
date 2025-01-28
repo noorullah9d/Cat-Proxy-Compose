@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "302181811210",
+    "project_id": "cat-proxy-5ca40",
+    "storage_bucket": "cat-proxy-5ca40.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:302181811210:android:1274d7aa5e9c17123bcbf3",
+        "android_client_info": {
+          "package_name": "com.free.vpn.unblock.proxy.hotspot.securevpn"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMcFuf7k17Ax5mwPUH9t6ai7iVCkiOoEk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      },
+      "admob_app_id": "ca-app-pub-7229352898267255~5595091895"
+    }
+  ],
+  "configuration_version": "1"
+}
