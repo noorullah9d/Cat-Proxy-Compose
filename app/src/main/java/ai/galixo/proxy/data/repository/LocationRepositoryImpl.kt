@@ -8,6 +8,11 @@ import ai.galixo.proxy.utils.LOCATION_URL
 import ai.galixo.proxy.utils.Result
 import ai.galixo.proxy.utils.extensions.isOnline
 import android.content.Context
+import com.github.shadowsocks.bg.BaseService
+import com.github.shadowsocks.preference.PrefUtils
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -16,7 +21,30 @@ class LocationRepositoryImpl @Inject constructor(
     private val locationApi: LocationApi
 ) : LocationRepository {
 
-    override suspend fun fetchLocationInfo(): Result<LocationData> {
+    override suspend fun getUserCurrentLocation(): Flow<Result<LocationData>> = callbackFlow {
+        trySend(Result.Loading(""))
+        if (BaseService.isStarted) {
+            trySend(Result.Success(getConnectedServer()))
+        } else {
+            trySend(fetchLocationInfo())
+        }
+        awaitClose()
+    }
+
+    private fun getConnectedServer(): LocationData {
+        return PrefUtils.selectedProfile?.let {
+            LocationData(
+                locationName = "${it.cityName},${it.countryName}",
+                ipAddress = it.ipaddress,
+                timeZone = it.timezone,
+                flag = it.flag,
+                latitude = it.lat.toDouble(),
+                longitude = it.lng.toDouble()
+            )
+        } ?: LocationData()
+    }
+
+    private suspend fun fetchLocationInfo(): Result<LocationData> {
         return try {
             if (context.isOnline()) {
                 val response = locationApi.getLocationInfo(LOCATION_URL)

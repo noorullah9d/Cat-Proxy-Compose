@@ -22,17 +22,20 @@ class LocationViewModel @Inject constructor(
 
     fun fetchLocationData() {
         viewModelScope.launch {
-            val result = locationRepository.fetchLocationInfo()
-            Timber.d("LocationData: viewmodel result= $result")
-            when (result) {
-                is Result.Loading -> {
-                    _locationData.value = Result.Loading("Loading...")
-                }
-                is Result.Success -> {
-                    _locationData.value = result
-                }
-                is Result.Error -> {
-                    _locationData.value = result
+            locationRepository.getUserCurrentLocation().collect { result ->
+                Timber.d("LocationData: viewmodel result= $result")
+                when (result) {
+                    is Result.Loading -> {
+                        _locationData.value = Result.Loading("Loading...")
+                    }
+
+                    is Result.Success -> {
+                        _locationData.value = result
+                    }
+
+                    is Result.Error -> {
+                        _locationData.value = result
+                    }
                 }
             }
         }
