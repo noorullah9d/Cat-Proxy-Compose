@@ -16,5 +16,9 @@ data class ServerEntity(
     val flag: String,
     val protocol: String,
     val port: String,
-    val encryption: String
+    val encryption: String,
+    var timezone: String,
+    var lat: String,
+    var lng: String,
+    var serverType: String
 )

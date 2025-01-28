@@ -15,8 +15,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -27,8 +29,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -43,7 +47,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.github.shadowsocks.bg.BaseService
 import com.github.shadowsocks.preference.PrefUtils
+import com.github.shadowsocks.preference.ServerGroupModel
 import com.github.shadowsocks.preference.ServerModel
+import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -54,6 +60,8 @@ fun ServersScreen(
     onBackPressed: () -> Unit
 ) {
     val serverListState = viewModel.serverListState.collectAsState()
+    var selectedTabIndex by remember { mutableStateOf(TabPage.All) }
+//    var filteredServers by remember { mutableStateOf<List<ServerGroupModel>>(emptyList()) }
     val context = LocalContext.current
 
     // Swipe refresh state
@@ -62,7 +70,12 @@ fun ServersScreen(
     var isSearchActive by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
 
-    val filteredServers = remember(serverListState.value, searchQuery) {
+    // Call the viewModel function to filter servers whenever the search query or tab changes
+    LaunchedEffect(searchQuery, selectedTabIndex) {
+        viewModel.filterServers(searchQuery, selectedTabIndex)
+    }
+
+    /*filteredServers = remember(serverListState.value, searchQuery) {
         when (val state = serverListState.value) {
             is Result.Success -> {
                 state.data.filter { it.countryName.contains(searchQuery, ignoreCase = true) == true }
@@ -72,42 +85,59 @@ fun ServersScreen(
         }
     }
 
+    // Filter the servers based on the selected tab
+    filteredServers = when (selectedTabIndex) {
+        TabPage.All -> {
+            viewModel.getServerGroupsGroupedByCountry()
+        }
+        TabPage.Recommended -> {
+            viewModel.getServerGroupsGroupedByServerType()
+        }
+    }*/
+
     Scaffold(
         topBar = {
-            Crossfade(targetState = isSearchActive, label = "") { active -> // animate UI changes
-                if (active) {
-                    SearchBar(
-                        modifier = Modifier.padding(vertical = 8.dp, horizontal = 14.dp),
-                        query = searchQuery,
-                        hint = stringResource(R.string.hint_locations),
-                        onQueryChanged = { query ->
-                            searchQuery = query
-                            viewModel.filterServers(query)
-                        },
-                        onClose = {
-                            isSearchActive = false
-                            searchQuery = ""
-                            viewModel.resetServers()
-                        }
-                    )
-                } else {
-                    CustomTopAppBar(
-                        modifier = Modifier,
-                        title = stringResource(R.string.locations),
-                        onBackPressed = onBackPressed,
-                        menuItems = listOf(
-                            {
-                                IconButton(onClick = { isSearchActive = true }) {
-                                    Image(
-                                        modifier = Modifier.size(28.dp),
-                                        painter = painterResource(R.drawable.ic_search),
-                                        contentDescription = "Search"
-                                    )
-                                }
+            Column {
+                Crossfade(targetState = isSearchActive, label = "") { active -> // animate UI changes
+                    if (active) {
+                        SearchBar(
+                            modifier = Modifier.padding(vertical = 8.dp, horizontal = 14.dp),
+                            query = searchQuery,
+                            hint = stringResource(R.string.hint_locations),
+                            onQueryChanged = { query ->
+                                searchQuery = query
+//                                viewModel.filterServers(query)
+                            },
+                            onClose = {
+                                isSearchActive = false
+                                searchQuery = ""
+                                viewModel.resetServers()
                             }
                         )
-                    )
+                    } else {
+                        CustomTopAppBar(
+                            modifier = Modifier,
+                            title = stringResource(R.string.locations),
+                            onBackPressed = onBackPressed,
+                            menuItems = listOf(
+                                {
+                                    IconButton(onClick = { isSearchActive = true }) {
+                                        Image(
+                                            modifier = Modifier.size(28.dp),
+                                            painter = painterResource(R.drawable.ic_search),
+                                            contentDescription = "Search"
+                                        )
+                                    }
+                                }
+                            )
+                        )
+                    }
                 }
+                Spacer(Modifier.height(16.dp))
+                CustomTabRow(
+                    selectedTabIndex = selectedTabIndex,
+                    onTabSelected = { selectedTabIndex = it }
+                )
             }
         },
         content = { paddingValues ->
@@ -123,7 +153,7 @@ fun ServersScreen(
                 ServersContent(
                     modifier = Modifier.padding(paddingValues),
                     serverListState = serverListState.value,
-                    filteredServers = filteredServers,
+//                    filteredServers = filteredServers,
                     onUpdateServer = { server ->
                         if (PrefUtils.selectedProfile?.ipaddress == server.ipaddress  && BaseService.isStarted)
                             context.toast(alreadyConnected)
@@ -144,12 +174,14 @@ fun ServersScreen(
 @Composable
 fun ServersContent(
     modifier: Modifier = Modifier,
-    serverListState: Result<List<ServerModel>>?,
-    filteredServers: List<ServerModel>,
+    serverListState: Result<List<ServerGroupModel>>?,
+//    filteredServers: List<ServerGroupModel>,
     onUpdateServer: (ServerModel) -> Unit,
 ) {
     var shouldShowShimmer by remember { mutableStateOf(true) }
     var shouldShowBannerAd by remember { mutableStateOf(true) }
+
+    var expandedGroups = remember { mutableStateMapOf<String, Boolean>() }
 
     Column(
         modifier = Modifier
@@ -167,7 +199,7 @@ fun ServersContent(
             }
 
             is Result.Success -> {
-                if (filteredServers.isEmpty()) {
+                if (serverListState.data.isEmpty()) {
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
@@ -182,10 +214,16 @@ fun ServersContent(
                             .padding(bottom = 8.dp),
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
-                        items(filteredServers) { server ->
-                            ServerItem(server = server) {
-                                onUpdateServer(server)
-                            }
+                        Timber.d("FilterServersList: ${serverListState.data}")
+                        items(serverListState.data) { serverGroup  ->
+                            ServerGroupItem(
+                                group = serverGroup,
+                                expanded = expandedGroups[serverGroup.countryName] == true,
+                                onUpdateServer = onUpdateServer,
+                                onExpandToggle = {
+                                    expandedGroups[serverGroup.countryName] = expandedGroups[serverGroup.countryName] != true
+                                }
+                            )
                         }
                     }
                     shouldShowBannerAd = true
@@ -245,33 +283,37 @@ fun ServersPreview() {
 
         // Example list of dummy server data
         val dummyServers = listOf(
-            ServerModel(
-                id = 1,
+            ServerGroupModel(
                 countryName = "USA",
-                cityName = "New York",
-                ipaddress = "192.168.1.1",
-                flag = "us"
+                flag = "us",
+                data = arrayListOf(
+                    ServerModel(
+                        id = 1,
+                        countryName = "USA",
+                        cityName = "New York",
+                        ipaddress = "192.168.1.1",
+                        flag = "us",
+                    ),
+                    ServerModel(
+                        id = 1,
+                        countryName = "USA",
+                        cityName = "LA",
+                        ipaddress = "192.168.1.1",
+                        flag = "us",
+                    )
+                )
             ),
-            ServerModel(
-                id = 2,
-                countryName = "Germany",
-                cityName = "Berlin",
-                ipaddress = "192.168.1.2",
-                flag = "de"
-            ),
-            ServerModel(
-                id = 3,
-                countryName = "France",
-                cityName = "Paris",
-                ipaddress = "192.168.1.3",
-                flag = "fr"
+            ServerGroupModel(
+                countryName = "United Kingdom",
+                flag = "gb",
+                data = arrayListOf()
             )
         )
 
         // Example 1: Success state with a list of servers
         ServersContent(
             serverListState = Result.Success(dummyServers),
-            filteredServers = dummyServers,
+//            filteredServers = dummyServers,
             onUpdateServer = { }
         )
 

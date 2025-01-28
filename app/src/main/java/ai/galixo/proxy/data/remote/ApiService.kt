@@ -1,6 +1,6 @@
 package ai.galixo.proxy.data.remote
 
-import ai.galixo.proxy.domain.model.ServerResponse
+import ai.galixo.proxy.domain.model.ServersResponse
 import ai.galixo.proxy.data.dto.MessageResponseDto
 import ai.galixo.proxy.data.dto.SupportMessageDto
 import retrofit2.Response
@@ -13,10 +13,15 @@ import retrofit2.http.Url
 
 interface ApiService {
 
-    @GET("api/servers")
+    @GET("api/v1/servers")
     suspend fun getServersList(
         @Header("Authorization") authHeader: String
-    ): Response<ServerResponse>
+    ): Response<ServersResponse>
+
+    /*@GET("api/servers")
+    suspend fun getServersList(
+        @Header("Authorization") authHeader: String
+    ): Response<ServerResponse>*/
 
     @Headers(
         "Content-Type:application/json",

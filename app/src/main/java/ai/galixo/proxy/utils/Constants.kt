@@ -8,3 +8,6 @@ var isAnySystemDialogShown = false
 
 const val LOCATION_URL = "https://ipinfo.io/json"
 
+const val GAME_FLAG = "gameFlag"
+const val STREAM_FLAG = "streamFlag"
+const val SPORTS_FLAG = "sportsFlag"

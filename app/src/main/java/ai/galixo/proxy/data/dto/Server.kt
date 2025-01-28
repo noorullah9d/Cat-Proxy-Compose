@@ -4,7 +4,7 @@ import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 @Keep
-data class ServerDto(
+data class Server(
     @SerializedName("id") var id: Int? = null,
     @SerializedName("ipaddress") var ipaddress: String? = null,
     @SerializedName("password") var password: String? = null,
@@ -14,5 +14,9 @@ data class ServerDto(
     @SerializedName("flag") var flag: String? = null,
     @SerializedName("protocol") var protocol: String? = null,
     @SerializedName("port") var port: String? = null,
-    @SerializedName("encryption") var encryption: String? = null
+    @SerializedName("encryption") var encryption: String? = null,
+    @SerializedName("timezone") var timezone: String? = null,
+    @SerializedName("lat") var lat: String? = null,
+    @SerializedName("lng") var lng: String? = null,
+    @SerializedName("server_type") var serverType: String? = null
 )

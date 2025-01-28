@@ -18,5 +18,9 @@ data class ServerModel(
     var port: String = "",
     var encryption: String = "",
     var ping: Long = 100,
-    var isPremium: Boolean = false
+    var isPremium: Boolean = false,
+    var timezone: String = "",
+    var lat: String = "",
+    var lng: String = "",
+    var serverType: String = ""
 ) : Parcelable

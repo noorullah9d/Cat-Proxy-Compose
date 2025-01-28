@@ -1,6 +1,7 @@
 package ai.galixo.proxy.domain.repository
 
 import ai.galixo.proxy.utils.Result
+import com.github.shadowsocks.preference.ServerGroupModel
 import com.github.shadowsocks.preference.ServerModel
 import com.github.shadowsocks.utils.DataTransferModel
 import kotlinx.coroutines.flow.Flow
@@ -9,7 +10,7 @@ interface ServersRepository {
 
     suspend fun getServers(hardRefresh: Boolean = false)
 
-    fun serversList(): Flow<Result<List<ServerModel>>>
+    fun serversList(): Flow<Result<List<ServerGroupModel>>>
 
     fun getSelectedServer(): Flow<ServerModel?>
 

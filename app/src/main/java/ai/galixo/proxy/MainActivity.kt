@@ -19,7 +19,6 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -28,7 +27,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -131,27 +129,6 @@ fun MainScreen(
                         }
                     )
                     Spacer(modifier = Modifier.height(0.dp))
-                    /*getNavItems().forEachIndexed { index, navigationItem ->
-                        DrawerItem(
-                            navigationItem = navigationItem,
-                            isSelected = false,
-                            onClick = {
-                                when (navigationItem.route) {
-                                    Destinations.LanguageSheet.route -> {
-                                        // Open the language selection sheet
-                                        openLanguageSheet = true
-                                    }
-
-                                    else -> {
-                                        // Navigate to the specified route
-                                        navController.navigate(navigationItem.route)
-                                    }
-                                }
-                                // Close the drawer after clicking
-                                scope.launch { drawerState.close() }
-                            }
-                        )
-                    }*/
                     LazyColumn(
                         modifier = Modifier.fillMaxSize()
                     ) {

@@ -4,8 +4,8 @@ import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 
 @Keep
-data class ServersDto(
-    @SerializedName("cname") var cityName: String? = null,
+data class ServerGroup(
+    @SerializedName("cname") var countryName: String? = null,
     @SerializedName("flag") var flag: String? = null,
-    @SerializedName("list") var data: ArrayList<ServerDto> = arrayListOf()
+    @SerializedName("list") var data: ArrayList<Server> = arrayListOf()
 )

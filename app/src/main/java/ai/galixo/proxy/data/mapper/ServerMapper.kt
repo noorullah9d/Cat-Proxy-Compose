@@ -1,10 +1,11 @@
 package ai.galixo.proxy.data.mapper
 
-import ai.galixo.proxy.data.dto.ServerDto
+import ai.galixo.proxy.data.dto.Server
 import ai.galixo.proxy.data.local.entities.ServerEntity
 import com.github.shadowsocks.preference.ServerModel
+import kotlin.String
 
-fun ServerDto.toServerEntity(): ServerEntity {
+fun Server.toServerEntity(): ServerEntity {
     return ServerEntity(
         id = this.id ?: 0,
         ipaddress = this.ipaddress ?: "",
@@ -15,9 +16,14 @@ fun ServerDto.toServerEntity(): ServerEntity {
         flag = this.flag ?: "",
         protocol = this.protocol ?: "",
         port = this.port ?: "",
-        encryption = this.encryption ?: ""
+        encryption = this.encryption ?: "",
+        timezone = this.timezone?: "",
+        lat = this.lat?: "",
+        lng = this.lng?: "",
+        serverType = this.serverType?: ""
     )
 }
+
 fun ServerEntity.toServerModel(): ServerModel {
     return ServerModel(
         id = id,
@@ -29,6 +35,10 @@ fun ServerEntity.toServerModel(): ServerModel {
         flag = flag,
         protocol = protocol,
         port = port,
-        encryption = encryption
+        encryption = encryption,
+        timezone = timezone,
+        lat = lat,
+        lng = lng,
+        serverType = serverType
     )
 }

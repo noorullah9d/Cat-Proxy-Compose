@@ -24,7 +24,8 @@ android {
         debug {
             isMinifyEnabled = false
 
-            resValue("string", "base_url", "https://proxyapiv2.fusionsai.net/")
+            resValue("string", "base_url", "https://proxydevapi.fusionsai.net/")
+//            resValue("string", "base_url", "https://proxyapiv2.fusionsai.net/")
             resValue("string", "support_url", "https://api.9dtechnologies.dev/api/support/")
 
             proguardFiles(

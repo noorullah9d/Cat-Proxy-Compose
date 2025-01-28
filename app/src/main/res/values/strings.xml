@@ -44,4 +44,8 @@
     <string name="subscription_settings">Subscription settings</string>
     <string name="advanced_settings">Advanced settings</string>
     <string name="others">Others</string>
+    <string name="free">Free</string>
+    <string name="no_of_locations">%1$s Locations</string>
+    <string name="all">All</string>
+    <string name="recommended">Recommended</string>
 </resources>

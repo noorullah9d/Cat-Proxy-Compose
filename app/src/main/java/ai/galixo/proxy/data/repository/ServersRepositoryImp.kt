@@ -2,7 +2,7 @@ package ai.galixo.proxy.data.repository
 
 import ai.galixo.cypherlib.NativeLib
 import ai.galixo.proxy.R
-import ai.galixo.proxy.data.dto.ServerDto
+import ai.galixo.proxy.data.dto.Server
 import ai.galixo.proxy.data.local.entities.ServerEntity
 import ai.galixo.proxy.data.mapper.toServerEntity
 import ai.galixo.proxy.data.mapper.toServerModel
@@ -16,8 +16,10 @@ import ai.galixo.proxy.utils.extensions.isOnline
 import android.content.Context
 import com.github.shadowsocks.bg.BaseService
 import com.github.shadowsocks.extensions.formatTime
+import com.github.shadowsocks.preference.PrefUtils
 import com.github.shadowsocks.preference.PrefUtils.lastSelectedProfile
 import com.github.shadowsocks.preference.PrefUtils.selectedProfile
+import com.github.shadowsocks.preference.ServerGroupModel
 import com.github.shadowsocks.preference.ServerModel
 import com.github.shadowsocks.utils.DataTransferModel
 import kotlinx.coroutines.Dispatchers
@@ -37,8 +39,8 @@ class ServersRepositoryImp @Inject constructor(
     private val serverDBRepo: ServersDBRepo
 ) : ServersRepository {
 
-    private val _serverListState =
-        MutableStateFlow<Result<List<ServerModel>>>(Result.Loading("Loading..."))
+    //    private val _serverListState = MutableStateFlow<Result<List<ServerModel>>>(Result.Loading("Loading..."))
+    private val _serverListState = MutableStateFlow<Result<List<ServerGroupModel>>>(Result.Loading("Loading..."))
     private val _selectedServer = MutableStateFlow<ServerModel?>(null)
 
     private var fastestServer: ServerModel? = null
@@ -65,6 +67,8 @@ class ServersRepositoryImp @Inject constructor(
 
             if (serverResponse.isSuccessful && serverResponse.body() != null) {
                 val serversList = serverResponse.body()!!.servers.flatMap { it.data }
+                Timber.d("Servers: list=$serversList")
+
                 val decryptedList = addOrUpdateEntities(serversList)
                 if (decryptedList.isNotEmpty()) {
                     updateSelectedServer()
@@ -80,7 +84,8 @@ class ServersRepositoryImp @Inject constructor(
         }
     }
 
-    override fun serversList(): Flow<Result<List<ServerModel>>> = _serverListState
+    //    override fun serversList(): Flow<Result<List<ServerModel>>> = _serverListState
+    override fun serversList(): Flow<Result<List<ServerGroupModel>>> = _serverListState
 
     override fun isServerSelected(): Boolean {
         return selectedProfile != null
@@ -120,7 +125,7 @@ class ServersRepositoryImp @Inject constructor(
         }
     }
 
-    private suspend fun addOrUpdateEntities(serversList: List<ServerDto>): List<ServerModel> {
+    private suspend fun addOrUpdateEntities(serversList: List<Server>): List<ServerGroupModel> {
         val entities = serversList.map { it.toServerEntity() }
         entities.forEach { entity ->
             if (serverDBRepo.checkIfServerExists(entity.id)) {
@@ -132,7 +137,7 @@ class ServersRepositoryImp @Inject constructor(
         return removeIfAnyServerIsNotAvailable(entities)
     }
 
-    private suspend fun removeIfAnyServerIsNotAvailable(serversList: List<ServerEntity>): List<ServerModel> {
+    private suspend fun removeIfAnyServerIsNotAvailable(serversList: List<ServerEntity>): List<ServerGroupModel> {
         val localServers = serverDBRepo.getAllServers()
         localServers.forEach {
             if (!serversList.contains(it)) {
@@ -142,7 +147,7 @@ class ServersRepositoryImp @Inject constructor(
         return calculatePingAndDecryptText(serverDBRepo.getAllServers())
     }
 
-    private suspend fun calculatePingAndDecryptText(serversList: List<ServerEntity>): List<ServerModel> {
+    private suspend fun calculatePingAndDecryptText(serversList: List<ServerEntity>): List<ServerGroupModel> {
         val serversDecryptedList = serversList.map { it.toServerModel() }
         coroutineScope {
             serversDecryptedList.chunked(4)
@@ -156,7 +161,7 @@ class ServersRepositoryImp @Inject constructor(
         }
 
         // Check the isAdsRemoved flag from SharedPreferences
-        val isAdsRemoved = /*PrefUtils.isAdsRemoved*/ false
+        val isAdsRemoved = PrefUtils.isAdsRemoved
 
         val updatedServers = if (isAdsRemoved) {
             // If ads are removed, set isPremium to true for all servers
@@ -180,8 +185,23 @@ class ServersRepositoryImp @Inject constructor(
         Timber.d("Servers: fastestServer: $fastestServer")
 
         // Combine sorted free servers and premium servers
-        return freeServers + premiumServers
+        return groupServersByCountry(freeServers + premiumServers)
     }
+
+    private suspend fun groupServersByCountry(serverList: List<ServerModel>): List<ServerGroupModel> =
+        withContext(Dispatchers.IO) {
+            // Group the servers by country name
+            val groupedByCountry = serverList.groupBy { it.countryName }
+
+            return@withContext groupedByCountry.map { (countryName, serversList) ->
+                // Create a ServerGroupModel for each country
+                ServerGroupModel(
+                    countryName = countryName,
+                    flag = serversList.firstOrNull()?.flag ?: "",  // Get the flag from the first server
+                    data = ArrayList(serversList)  // Add all servers of the same country
+                )
+            }
+        }
 
     private suspend fun performDecryption(serverModel: ServerModel) = withContext(Dispatchers.IO) {
         serverModel.password = cypherRepository.decryptAES256CBC(serverModel.password)
