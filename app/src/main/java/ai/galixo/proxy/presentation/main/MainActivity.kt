@@ -9,10 +9,13 @@ import ai.galixo.proxy.navigation.DrawerItem
 import ai.galixo.proxy.navigation.getGroupedNavItems
 import ai.galixo.proxy.presentation.base.BaseActivity
 import ai.galixo.proxy.presentation.home.HomeViewModel
+import ai.galixo.proxy.presentation.iap.BillingViewModel
 import ai.galixo.proxy.presentation.languages.LanguageSelectionSheet
 import ai.galixo.proxy.presentation.servers.ServersViewModel
 import ai.galixo.proxy.ui.theme.CatTheme
+import ai.galixo.proxy.utils.PremiumSource
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.os.Bundle
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
@@ -54,20 +57,30 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.github.shadowsocks.preference.PrefUtils
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : BaseActivity() {
+
     private val serversViewModel: ServersViewModel by viewModels()
     private val homeViewModel: HomeViewModel by viewModels()
     private val mainViewModel: MainViewModel by viewModels()
+
     private val activityHelper: VpnActivityHelper by lazy {
         VpnActivityHelper(this)
     }
+
+    @Inject
+    lateinit var billingViewModel: BillingViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,14 +88,24 @@ class MainActivity : BaseActivity() {
         mainViewModel.getRemoteConfig() // get ad ids from remote config
         serversViewModel.fetchServers()
         activityHelper.initializeAndObserve()
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                billingViewModel.purchases.collect { purchaseList ->
+                    Timber.d("purchase list: $purchaseList")
+                    PrefUtils.isAdsRemoved = purchaseList?.isNotEmpty() == true
+                }
+            }
+        }
+
         setContent {
             CatTheme {
                 Surface {
                     MainScreen(
+                        billingViewModel = billingViewModel,
                         viewModel = homeViewModel,
-                        onLanguageChanged = {
-                            recreate()
-                        }
+                        onLanguageChanged = { recreate() },
+                        onRestart = { recreate() }
                     )
                 }
             }
@@ -94,8 +117,10 @@ class MainActivity : BaseActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
+    billingViewModel: BillingViewModel,
     viewModel: HomeViewModel,
-    onLanguageChanged: () -> Unit
+    onLanguageChanged: () -> Unit,
+    onRestart: () -> Unit
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -153,7 +178,12 @@ fun MainScreen(
                                     modifier = Modifier
                                         .clip(CatTheme.shape.tile)
                                         .fillMaxWidth()
-                                        .padding(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 16.dp)
+                                        .padding(
+                                            start = 16.dp,
+                                            end = 16.dp,
+                                            top = 0.dp,
+                                            bottom = 16.dp
+                                        )
                                         .border(
                                             width = 1.dp,
                                             color = CatTheme.colorScheme.divider,
@@ -166,7 +196,7 @@ fun MainScreen(
                                     Column(
                                         modifier = Modifier
                                     ) {
-                                        group.items.forEachIndexed  { index, navigationItem ->
+                                        group.items.forEachIndexed { index, navigationItem ->
                                             DrawerItem(
                                                 navigationItem = navigationItem,
                                                 isSelected = false,
@@ -176,6 +206,7 @@ fun MainScreen(
                                                             // Open the language selection sheet
                                                             openLanguageSheet = true
                                                         }
+
                                                         else -> {
                                                             // Navigate to the specified route
                                                             navController.navigate(navigationItem.route)
@@ -234,7 +265,11 @@ fun MainScreen(
                             }
                         },
                         actions = {
-                            IconButton(onClick = { navController.navigate(Destinations.PremiumScreen.route) }) {
+                            IconButton(
+                                onClick = {
+//                                    navController.navigate(Destinations.PremiumScreen.route)
+                                    navController.navigate(Destinations.PremiumScreen.route.replace("{source}", PremiumSource.PREMIUM_BUTTON))
+                                }) {
                                 Image(
                                     painter = painterResource(id = R.drawable.ic_premium),
                                     contentDescription = "Premium"
@@ -250,9 +285,11 @@ fun MainScreen(
             content = {
                 AppNavigation(
                     context = LocalContext.current,
+                    billingViewModel = billingViewModel,
                     viewModel = viewModel,
                     navController = navController,
-                    hasTermsAndConditionsAccepted = hasTermsAndConditionsAccepted
+                    hasTermsAndConditionsAccepted = hasTermsAndConditionsAccepted,
+                    onRestart = { onRestart() }
                 )
             }
         )
@@ -264,4 +301,10 @@ fun MainScreen(
             if (languageChanged) onLanguageChanged()
         }
     }
+}
+
+@Composable
+fun getActivity(): Activity? {
+    val context = LocalContext.current
+    return context as? Activity
 }

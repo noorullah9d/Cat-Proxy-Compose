@@ -6,6 +6,7 @@ import ai.galixo.proxy.navigation.Destinations
 import ai.galixo.proxy.presentation.base.UiState
 import ai.galixo.proxy.presentation.components.LottieAnimation
 import ai.galixo.proxy.ui.theme.CatTheme
+import ai.galixo.proxy.utils.PremiumSource
 import ai.galixo.proxy.utils.extensions.toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -229,7 +230,8 @@ fun HomeContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .clickable(enabled = true) {
-                    navController.navigate(Destinations.PremiumScreen.route)
+//                    navController.navigate(Destinations.PremiumScreen.route)
+                    navController.navigate(Destinations.PremiumScreen.route.replace("{source}", PremiumSource.PREMIUM_BUTTON))
                 },
             contentScale = ContentScale.FillWidth
         )

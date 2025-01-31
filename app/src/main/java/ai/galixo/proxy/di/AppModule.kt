@@ -10,6 +10,7 @@ import ai.galixo.proxy.data.repository.FeedbackRepositoryImp
 import ai.galixo.proxy.data.repository.LanguageRepoImpl
 import ai.galixo.proxy.data.repository.RemoteConfigRepositoryImpl
 import ai.galixo.proxy.domain.repository.RemoteConfigRepository
+import ai.galixo.proxy.presentation.iap.BillingViewModel
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dagger.Module
 import dagger.Provides
@@ -41,6 +42,14 @@ object AppModule {
 
     @Provides
     fun provideLanguageRepo(): LanguageRepo = LanguageRepoImpl()
+
+    @Provides
+    @Singleton
+    fun provideBillingViewModel(
+        context: Context
+    ): BillingViewModel {
+        return BillingViewModel(context)
+    }
 
     @Provides
     @Singleton

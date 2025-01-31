@@ -141,6 +141,7 @@ fun AgreementScreen(
 
                 FreeTrialFooter(
                     modifier = Modifier.padding(bottom = 16.dp),
+                    fullString = stringResource(id = R.string.terms_and_conditions_summary),
                     clickableTextColor = CatTheme.colorScheme.primary,
                     textStyle = CatTheme.typography.smallText.copy(
                         color = CatTheme.colorScheme.textSecondary,

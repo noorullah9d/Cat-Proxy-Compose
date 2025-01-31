@@ -7,6 +7,7 @@ import ai.galixo.proxy.presentation.components.CustomTopAppBar
 import ai.galixo.proxy.presentation.components.SearchBar
 import ai.galixo.proxy.presentation.home.HomeViewModel
 import ai.galixo.proxy.ui.theme.CatTheme
+import ai.galixo.proxy.utils.PremiumSource
 import ai.galixo.proxy.utils.Result
 import ai.galixo.proxy.utils.extensions.toast
 import androidx.compose.animation.Crossfade
@@ -158,7 +159,8 @@ fun ServersScreen(
                         if (PrefUtils.selectedProfile?.ipaddress == server.ipaddress  && BaseService.isStarted)
                             context.toast(alreadyConnected)
                         else if (server.isPremium) {
-                            navController.navigate(Destinations.PremiumScreen.route)
+//                            navController.navigate(Destinations.PremiumScreen.route)
+                            navController.navigate(Destinations.PremiumScreen.route.replace("{source}", PremiumSource.SERVERS))
                         } else {
                             viewModel.setSelectedServer(server)
                             homeViewModel.shouldReconnect(true)

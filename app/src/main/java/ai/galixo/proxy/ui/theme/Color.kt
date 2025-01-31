@@ -43,3 +43,8 @@ val dark_text_secondary = Color(0xFF666666)
 val dark_text_tertiary = Color(0xFF989898)
 val dark_divider = Color(0xFFE6E6E6)
 val dark_search_bar = Color(0xFFFBFBFB)
+
+val orange = Color(0xFFF78D66)
+val lightOrange = Color(0xFFF0C363)
+val indigo = Color(0xFF6B5FEF)
+val yellow = Color(0xFFFFDA44)

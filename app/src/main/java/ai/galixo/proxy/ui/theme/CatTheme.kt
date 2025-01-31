@@ -5,12 +5,14 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import timber.log.Timber
 
 private val darkColorScheme = CatColorScheme(
     primary = dark_primary,
@@ -63,17 +65,23 @@ fun CatTheme(
 
     // Get the current destination
     val currentDestination = navController.currentBackStackEntryAsState().value?.destination?.route
+    Timber.d("Theme: current des= $currentDestination")
 
     // Add primary status bar color from chosen color scheme.
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = when (currentDestination) {
-                "splash" -> colorScheme.primary.toArgb() // SplashScreen color
-                else -> colorScheme.background.toArgb() // Default theme color
+            val statusBarColor = when (currentDestination) {
+                "splash" -> colorScheme.primary
+                "free_trial" -> indigo
+                else -> colorScheme.background
             }
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = isDarkTheme
+            // Set status bar color
+            window.statusBarColor = statusBarColor.toArgb()
+            // Determine if light icons should be used based on color brightness
+            val isLightStatusBar = statusBarColor.luminance() > 0.5f
+            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = isLightStatusBar
         }
     }
 

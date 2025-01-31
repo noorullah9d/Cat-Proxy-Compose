@@ -2,6 +2,7 @@ package ai.galixo.proxy.navigation
 
 import ai.galixo.proxy.R
 import ai.galixo.proxy.ui.theme.CatTheme
+import ai.galixo.proxy.utils.PremiumSource
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -67,7 +68,8 @@ fun DrawerHeader(
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp)
                 .clickable(enabled = true) {
-                    navController.navigate(Destinations.PremiumScreen.route)
+//                    navController.navigate(Destinations.PremiumScreen.route)
+                    navController.navigate(Destinations.PremiumScreen.route.replace("{source}", PremiumSource.PREMIUM_BUTTON))
                     onClose()
                 },
             contentScale = ContentScale.FillWidth

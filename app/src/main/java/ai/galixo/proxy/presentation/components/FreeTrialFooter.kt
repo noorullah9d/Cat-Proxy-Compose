@@ -5,7 +5,9 @@ import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -22,12 +24,13 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun FreeTrialFooter(
     modifier: Modifier = Modifier,
+    fullString: String,
     clickableTextColor: Color = Color.Black,
     textStyle: TextStyle,
     onPrivacyPolicyClicked: () -> Unit,
     onTermsAndConditionsClicked: () -> Unit
 ) {
-    val fullText = stringResource(id = R.string.terms_and_conditions_summary)
+    val fullText = fullString
     val privacyPolicyText = stringResource(id = R.string.privacy_policy)
     val termsAndConditionsText = stringResource(id = R.string.terms_and_conditions)
 
@@ -67,7 +70,8 @@ fun FreeTrialFooter(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(16.dp)
+            .verticalScroll(rememberScrollState()),
         contentAlignment = Alignment.Center
     ) {
         BasicText(

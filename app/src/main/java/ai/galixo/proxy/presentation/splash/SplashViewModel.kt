@@ -13,8 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SplashViewModel @Inject constructor(
-    private val serversRepository: ServersRepository,
-//    private val remoteConfigRepository: RemoteConfigRepository
+    private val serversRepository: ServersRepository
 ) : ViewModel() {
 
     init {
@@ -35,9 +34,5 @@ class SplashViewModel @Inject constructor(
 
     fun getDefaultLanguage(): LanguageModel {
         return LanguageModel("English", "English", "en", R.drawable.en)
-    }
-
-    fun getRemoteConfig() = viewModelScope.launch(Dispatchers.IO) {
-//        remoteConfigRepository.getRemoteResponse()
     }
 }

@@ -13,6 +13,7 @@ enum class Destinations(val route: String) {
     RateUs("rate_us"),
     FeedbackScreen("feedback"),
     FAQsScreen("faqs"),
-    PremiumScreen("premium"),
+    PremiumScreen("premium/{source}"),
+    FreeTrialScreen("free_trial"),
     ServersScreen("servers")
 }
