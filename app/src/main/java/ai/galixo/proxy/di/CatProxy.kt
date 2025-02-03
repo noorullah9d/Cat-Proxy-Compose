@@ -2,6 +2,7 @@ package ai.galixo.proxy.di
 
 import ai.galixo.cypherlib.NativeLib
 import ai.galixo.proxy.BuildConfig
+import ai.galixo.proxy.admob.AppOpenManager
 import ai.galixo.proxy.presentation.iap.BillingViewModel
 import ai.galixo.proxy.presentation.main.MainActivity
 import android.app.Application
@@ -18,6 +19,7 @@ import javax.inject.Inject
 
 @HiltAndroidApp
 class CatProxy: Application() {
+    var appOpen: AppOpenManager? = null
 
     @Inject
     lateinit var billingViewModel: BillingViewModel
@@ -38,6 +40,10 @@ class CatProxy: Application() {
             }
         }
 
+        if (!isAdsRemoved) {
+            appOpen = AppOpenManager(this)
+        }
+
         if (BuildConfig.DEBUG) {
             if (Timber.treeCount == 0) {
                 Timber.plant(Timber.DebugTree())
@@ -48,5 +54,10 @@ class CatProxy: Application() {
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
         Core.updateNotificationChannels()
+    }
+
+    override fun onTerminate() {
+        super.onTerminate()
+        appOpen = null
     }
 }

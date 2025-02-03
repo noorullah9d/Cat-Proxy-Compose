@@ -19,6 +19,7 @@ lottieCompose = "6.1.0"
 mapsCompose = "4.4.1"
 mapsComposeUtils = "4.4.1"
 navigationCompose = "2.8.6"
+playServicesAds = "23.6.0"
 playServicesLocation = "21.3.0"
 runtimeLivedata = "1.7.6"
 appcompat = "1.7.0"
@@ -31,12 +32,14 @@ googleFirebaseCrashlytics = "3.0.2"
 firebaseAnalytics = "22.2.0"
 firebaseConfig = "22.1.0"
 firebaseMessaging = "24.1.0"
+userMessagingPlatform = "3.1.0"
 
 [libraries]
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanistPager" }
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+androidx-lifecycle-process = { module = "androidx.lifecycle:lifecycle-process", version.ref = "lifecycleRuntimeKtx" }
 androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleRuntimeKtx" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
@@ -64,6 +67,7 @@ androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version
 maps-compose = { module = "com.google.maps.android:maps-compose", version.ref = "mapsCompose" }
 maps-compose-utils = { module = "com.google.maps.android:maps-compose-utils", version.ref = "mapsComposeUtils" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+play-services-ads = { module = "com.google.android.gms:play-services-ads", version.ref = "playServicesAds" }
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
@@ -74,6 +78,7 @@ firebase-crashlytics-ktx = { group = "com.google.firebase", name = "firebase-cra
 firebase-analytics-ktx = { group = "com.google.firebase", name = "firebase-analytics-ktx", version.ref = "firebaseAnalytics" }
 firebase-config = { group = "com.google.firebase", name = "firebase-config", version.ref = "firebaseConfig" }
 firebase-messaging-ktx = { group = "com.google.firebase", name = "firebase-messaging-ktx", version.ref = "firebaseMessaging" }
+user-messaging-platform = { module = "com.google.android.ump:user-messaging-platform", version.ref = "userMessagingPlatform" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

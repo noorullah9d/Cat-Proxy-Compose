@@ -119,6 +119,12 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
+    // ump
+    implementation(libs.user.messaging.platform)
+
+    // ads
+    implementation(libs.play.services.ads)
+
     // in-app purchase
     implementation(libs.billing.ktx)
 
@@ -164,6 +170,7 @@ dependencies {
     // lifecycle
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.process)
     implementation(libs.androidx.runtime.livedata)
 
     testImplementation(libs.junit)

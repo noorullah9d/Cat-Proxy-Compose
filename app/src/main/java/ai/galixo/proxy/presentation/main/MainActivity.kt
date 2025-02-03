@@ -1,7 +1,9 @@
 package ai.galixo.proxy.presentation.main
 
 import ai.galixo.proxy.R
+import ai.galixo.proxy.admob.AppOpenManager
 import ai.galixo.proxy.data.helper.VpnActivityHelper
+import ai.galixo.proxy.di.CatProxy
 import ai.galixo.proxy.navigation.AppNavigation
 import ai.galixo.proxy.navigation.Destinations
 import ai.galixo.proxy.navigation.DrawerHeader
@@ -85,6 +87,8 @@ class MainActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        val appOpen = (application as CatProxy).appOpen
+
         mainViewModel.getRemoteConfig() // get ad ids from remote config
         serversViewModel.fetchServers()
         activityHelper.initializeAndObserve()
@@ -102,6 +106,7 @@ class MainActivity : BaseActivity() {
             CatTheme {
                 Surface {
                     MainScreen(
+                        appOpenManager = appOpen,
                         billingViewModel = billingViewModel,
                         viewModel = homeViewModel,
                         onLanguageChanged = { recreate() },
@@ -117,6 +122,7 @@ class MainActivity : BaseActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
+    appOpenManager: AppOpenManager?,
     billingViewModel: BillingViewModel,
     viewModel: HomeViewModel,
     onLanguageChanged: () -> Unit,
@@ -284,6 +290,7 @@ fun MainScreen(
             },
             content = {
                 AppNavigation(
+                    appOpenManager = appOpenManager,
                     context = LocalContext.current,
                     billingViewModel = billingViewModel,
                     viewModel = viewModel,

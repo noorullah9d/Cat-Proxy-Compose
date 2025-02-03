@@ -73,7 +73,7 @@ fun CatTheme(
         SideEffect {
             val window = (view.context as Activity).window
             val statusBarColor = when (currentDestination) {
-                "splash" -> colorScheme.primary
+//                "splash" -> colorScheme.primary
                 "free_trial" -> indigo
                 else -> colorScheme.background
             }

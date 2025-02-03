@@ -16,7 +16,7 @@ val light_error_container = Color(0xFFFFEEEE)
 val light_on_error_container = Color(0xFFFF4D4D)
 
 val light_ad_background = Color(0xFFE8F1F8)
-val light_shimmer = Color(0xFFE6E8EE)
+val light_shimmer = Color(0xFFBCBEC4)
 val light_text_primary = Color(0xFF333333)
 val light_text_secondary = Color(0xFF666666)
 val light_text_tertiary = Color(0xFF989898)

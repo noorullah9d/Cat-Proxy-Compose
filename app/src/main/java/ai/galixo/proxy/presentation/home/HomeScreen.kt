@@ -1,6 +1,9 @@
 package ai.galixo.proxy.presentation.home
 
 import ai.galixo.proxy.R
+import ai.galixo.proxy.admob.admob_native_id_home
+import ai.galixo.proxy.admob.nativeAd.LoadNativeAd
+import ai.galixo.proxy.admob.nativeAd.NativeAdSize
 import ai.galixo.proxy.domain.model.Stats
 import ai.galixo.proxy.navigation.Destinations
 import ai.galixo.proxy.presentation.base.UiState
@@ -11,7 +14,6 @@ import ai.galixo.proxy.utils.extensions.toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -127,6 +129,7 @@ fun HomeContent(
     connectVpn: () -> Unit,
     disconnectVpn: () -> Unit
 ) {
+    val context = LocalContext.current
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -236,15 +239,12 @@ fun HomeContent(
             contentScale = ContentScale.FillWidth
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Box(
-            modifier = Modifier
-                .height(80.dp)
-                .fillMaxWidth()
-                .background(
-                    color = CatTheme.colorScheme.adBackground,
-                    shape = CatTheme.shape.ad
-                )
-        ) {}
+
+        LoadNativeAd(
+            context = context,
+            adUnitId = admob_native_id_home,
+            adSize = NativeAdSize.SMALL
+        )
     }
 }
 
