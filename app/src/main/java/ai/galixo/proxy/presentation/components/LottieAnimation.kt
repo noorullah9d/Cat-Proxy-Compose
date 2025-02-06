@@ -1,6 +1,7 @@
 package ai.galixo.proxy.presentation.components
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import com.airbnb.lottie.compose.LottieAnimation
@@ -12,13 +13,21 @@ import com.airbnb.lottie.compose.rememberLottieComposition
 fun LottieAnimation(
     modifier: Modifier = Modifier,
     animationRes: Int,
-    iterations: Int = 1
+    iterations: Int = 1,
+    onAnimationEnd: () -> Unit
 ) {
     val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(animationRes))
     val progress by animateLottieCompositionAsState(
         composition = composition,
-        iterations = iterations
+        iterations = iterations,
+        isPlaying = true
     )
+
+    LaunchedEffect(progress) {
+        if (progress == 1f) {
+            onAnimationEnd()
+        }
+    }
 
     LottieAnimation(
         composition = composition,

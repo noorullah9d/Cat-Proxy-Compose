@@ -7,11 +7,11 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.luminance
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import timber.log.Timber
 
 private val darkColorScheme = CatColorScheme(
@@ -55,7 +55,7 @@ private val lightColorScheme = CatColorScheme(
 @Composable
 fun CatTheme(
     isDarkTheme: Boolean = isSystemInDarkTheme(),
-    navController: NavController = NavController(LocalContext.current),
+    navController: NavController = rememberNavController(),
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
@@ -73,8 +73,9 @@ fun CatTheme(
         SideEffect {
             val window = (view.context as Activity).window
             val statusBarColor = when (currentDestination) {
-//                "splash" -> colorScheme.primary
+                "splash" -> colorScheme.primary
                 "free_trial" -> indigo
+                "premium/{source}" -> premiumStatusBarColor
                 else -> colorScheme.background
             }
             // Set status bar color

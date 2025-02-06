@@ -24,6 +24,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import coil.compose.rememberAsyncImagePainter
 import com.google.android.gms.ads.nativead.MediaView
@@ -168,7 +169,10 @@ private fun PopulateSmallNative(nativeAd: NativeAd?, composeView: View?) {
                                 Text(
                                     text = cta.uppercase(),
                                     color = CatTheme.colorScheme.textPrimary,
-                                    style = MaterialTheme.typography.titleSmall
+                                    style = CatTheme.typography.semiBold.copy(
+                                        fontSize = 12.sp
+                                    ),
+                                    maxLines = 1
                                 )
                             }
                         )
@@ -208,7 +212,7 @@ private fun PopulateLargeNative(nativeAd: NativeAd?, composeView: View?) {
                     icon?.let { drawable ->
                         Image(
                             painter = rememberAsyncImagePainter(model = drawable),
-                            contentDescription = "Ad"/*it.icon?.contentDescription*/,
+                            contentDescription = "Ad",
                             modifier = Modifier
                                 .size(65.dp)
                                 .clip(RoundedCornerShape(8.dp)),

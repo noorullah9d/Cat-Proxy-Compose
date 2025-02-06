@@ -14,6 +14,7 @@ import ai.galixo.proxy.presentation.servers.ServersScreen
 import ai.galixo.proxy.presentation.splash.AgreementScreen
 import ai.galixo.proxy.presentation.splash.SplashScreen
 import ai.galixo.proxy.presentation.tunneling.SplitTunnelingScreen
+import ai.galixo.proxy.ui.theme.CatTheme
 import ai.galixo.proxy.utils.extensions.toast
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -36,128 +37,130 @@ fun AppNavigation(
     hasTermsAndConditionsAccepted: Boolean,
     onRestart: () -> Unit
 ) {
-    NavHost(
-        navController = navController,
-        startDestination = if (!hasTermsAndConditionsAccepted) Destinations.AgreementScreen.route else Destinations.SplashScreen.route
-    ) {
-        composable(Destinations.AgreementScreen.route) {
-            AgreementScreen(
-                navController = navController,
-                onPrivacyPolicyClick = {
-                    openLink(context, "https://galixo.ai/cat-proxy/privacy-policy")
-                },
-                onTermsClick = {
-                    openLink(context, "https://galixo.ai/cat-proxy/terms-and-conditions")
-                }
-            )
-        }
-
-        composable(Destinations.SplashScreen.route) {
-            SplashScreen(navController = navController, appOpenManager = appOpenManager)
-        }
-
-        composable(Destinations.LanguageScreen.route) {
-            LanguageScreen(navController = navController)
-        }
-
-        composable(Destinations.HomeScreen.route) {
-            HomeScreen(
-                viewModel = viewModel,
-                navController = navController
-            )
-        }
-
-        composable(Destinations.ManageSubscription.route) {
-            OpenLink(
-                "https://play.google.com/store/account/subscriptions?package=${context.packageName}",
-                navController
-            )
-        }
-
-        composable(Destinations.SplitTunnelingScreen.route) {
-            SplitTunnelingScreen(
-                onBackPressed = { navController.popBackStack() }
-            )
-        }
-
-        composable(Destinations.CurrentLocationScreen.route) {
-            LocationScreen {
-                navController.popBackStack()
+    CatTheme(navController = navController) {
+        NavHost(
+            navController = navController,
+            startDestination = if (!hasTermsAndConditionsAccepted) Destinations.AgreementScreen.route else Destinations.SplashScreen.route
+        ) {
+            composable(Destinations.AgreementScreen.route) {
+                AgreementScreen(
+                    navController = navController,
+                    onPrivacyPolicyClick = {
+                        openLink(context, "https://galixo.ai/cat-proxy/privacy-policy")
+                    },
+                    onTermsClick = {
+                        openLink(context, "https://galixo.ai/cat-proxy/terms-and-conditions")
+                    }
+                )
             }
-        }
 
-        composable(Destinations.LanguageSheet.route) { }
-
-        composable(Destinations.ShareApp.route) {
-            ShareApp(navController)
-        }
-
-        composable(Destinations.RateUs.route) {
-            OpenLink(
-                "https://play.google.com/store/apps/details?id=${context.packageName}",
-                navController
-            )
-        }
-
-        composable(Destinations.FeedbackScreen.route) {
-            FeedbackScreen {
-                navController.popBackStack()
+            composable(Destinations.SplashScreen.route) {
+                SplashScreen(navController = navController, appOpenManager = appOpenManager)
             }
-        }
 
-        composable(Destinations.FAQsScreen.route) {
-            FAQsScreen {
-                navController.popBackStack()
+            composable(Destinations.LanguageScreen.route) {
+                LanguageScreen(navController = navController)
             }
-        }
 
-        // ✅ PremiumScreen with source argument
-        composable(
-            route = Destinations.PremiumScreen.route,
-            arguments = listOf(navArgument("source") { defaultValue = "default" })
-        ) { navBackStackEntry ->
-            val source = navBackStackEntry.arguments?.getString("source") ?: "default"
+            composable(Destinations.HomeScreen.route) {
+                HomeScreen(
+                    viewModel = viewModel,
+                    navController = navController
+                )
+            }
 
-            PremiumScreen(
-                premiumSource = source,
-                billingViewModel = billingViewModel,
-                navController = navController,
-                onPrivacyPolicyClick = {
-                    openLink(context, "https://galixo.ai/cat-proxy/privacy-policy")
-                },
-                onTermsClick = {
-                    openLink(context, "https://galixo.ai/cat-proxy/terms-and-conditions")
-                },
-                onRestart = {
-                    onRestart()
-                }
-            )
-        }
+            composable(Destinations.ManageSubscription.route) {
+                OpenLink(
+                    "https://play.google.com/store/account/subscriptions?package=${context.packageName}",
+                    navController
+                )
+            }
 
-        composable(Destinations.FreeTrialScreen.route) {
-            FreeTrialScreen(
-                billingViewModel = billingViewModel,
-                navController = navController,
-                onPrivacyPolicyClick = {
-                    openLink(context, "https://galixo.ai/cat-proxy/privacy-policy")
-                },
-                onTermsClick = {
-                    openLink(context, "https://galixo.ai/cat-proxy/terms-and-conditions")
-                },
-                onRestart = {
-                    onRestart()
-                }
-            )
-        }
+            composable(Destinations.SplitTunnelingScreen.route) {
+                SplitTunnelingScreen(
+                    onBackPressed = { navController.popBackStack() }
+                )
+            }
 
-        composable(Destinations.ServersScreen.route) {
-            ServersScreen(
-                homeViewModel = viewModel,
-                navController = navController,
-                onBackPressed = {
+            composable(Destinations.CurrentLocationScreen.route) {
+                LocationScreen {
                     navController.popBackStack()
                 }
-            )
+            }
+
+            composable(Destinations.LanguageSheet.route) { }
+
+            composable(Destinations.ShareApp.route) {
+                ShareApp(navController)
+            }
+
+            composable(Destinations.RateUs.route) {
+                OpenLink(
+                    "https://play.google.com/store/apps/details?id=${context.packageName}",
+                    navController
+                )
+            }
+
+            composable(Destinations.FeedbackScreen.route) {
+                FeedbackScreen {
+                    navController.popBackStack()
+                }
+            }
+
+            composable(Destinations.FAQsScreen.route) {
+                FAQsScreen {
+                    navController.popBackStack()
+                }
+            }
+
+            // ✅ PremiumScreen with source argument
+            composable(
+                route = Destinations.PremiumScreen.route,
+                arguments = listOf(navArgument("source") { defaultValue = "default" })
+            ) { navBackStackEntry ->
+                val source = navBackStackEntry.arguments?.getString("source") ?: "default"
+
+                PremiumScreen(
+                    premiumSource = source,
+                    billingViewModel = billingViewModel,
+                    navController = navController,
+                    onPrivacyPolicyClick = {
+                        openLink(context, "https://galixo.ai/cat-proxy/privacy-policy")
+                    },
+                    onTermsClick = {
+                        openLink(context, "https://galixo.ai/cat-proxy/terms-and-conditions")
+                    },
+                    onRestart = {
+                        onRestart()
+                    }
+                )
+            }
+
+            composable(Destinations.FreeTrialScreen.route) {
+                FreeTrialScreen(
+                    billingViewModel = billingViewModel,
+                    navController = navController,
+                    onPrivacyPolicyClick = {
+                        openLink(context, "https://galixo.ai/cat-proxy/privacy-policy")
+                    },
+                    onTermsClick = {
+                        openLink(context, "https://galixo.ai/cat-proxy/terms-and-conditions")
+                    },
+                    onRestart = {
+                        onRestart()
+                    }
+                )
+            }
+
+            composable(Destinations.ServersScreen.route) {
+                ServersScreen(
+                    homeViewModel = viewModel,
+                    navController = navController,
+                    onBackPressed = {
+                        navController.popBackStack()
+                    }
+                )
+            }
         }
     }
 }

@@ -18,12 +18,14 @@ fun LoadNativeAd(
     adSize: NativeAdSize = NativeAdSize.SMALL
 ) {
     var nativeAd by remember { mutableStateOf<NativeAd?>(null) }
+    var isAdFailed by remember { mutableStateOf(false) }
 
     DisposableEffect(Unit) {
         val adBuilder = AdLoader.Builder(context, adUnitId)
 
         adBuilder.forNativeAd { ad ->
             nativeAd = ad
+            isAdFailed = false
         }
 
         val videoOptions =
@@ -39,6 +41,7 @@ fun LoadNativeAd(
         val adLoader = adBuilder.withAdListener(object : AdListener() {
             override fun onAdFailedToLoad(error: LoadAdError) {
                 nativeAd = null
+                isAdFailed = true
             }
         }).build()
 
@@ -50,16 +53,18 @@ fun LoadNativeAd(
     }
 
     // Display the ad content when available
-    when (adSize) {
-        NativeAdSize.SMALL -> {
-            nativeAd?.let { ad ->
-                CallNativeAd(ad, NativeAdSize.SMALL)
-            } ?: SmallNativeShimmer()
-        }
-        NativeAdSize.LARGE -> {
-            nativeAd?.let { ad ->
-                CallNativeAd(ad, NativeAdSize.LARGE)
-            } ?: LargeNativeShimmer()
+    if (!isAdFailed) {
+        when (adSize) {
+            NativeAdSize.SMALL -> {
+                nativeAd?.let { ad ->
+                    CallNativeAd(ad, NativeAdSize.SMALL)
+                } ?: SmallNativeShimmer()
+            }
+            NativeAdSize.LARGE -> {
+                nativeAd?.let { ad ->
+                    CallNativeAd(ad, NativeAdSize.LARGE)
+                } ?: LargeNativeShimmer()
+            }
         }
     }
 }

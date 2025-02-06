@@ -16,10 +16,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -62,7 +60,6 @@ fun ServersScreen(
 ) {
     val serverListState = viewModel.serverListState.collectAsState()
     var selectedTabIndex by remember { mutableStateOf(TabPage.All) }
-//    var filteredServers by remember { mutableStateOf<List<ServerGroupModel>>(emptyList()) }
     val context = LocalContext.current
 
     // Swipe refresh state
@@ -76,29 +73,16 @@ fun ServersScreen(
         viewModel.filterServers(searchQuery, selectedTabIndex)
     }
 
-    /*filteredServers = remember(serverListState.value, searchQuery) {
-        when (val state = serverListState.value) {
-            is Result.Success -> {
-                state.data.filter { it.countryName.contains(searchQuery, ignoreCase = true) == true }
-            }
-
-            else -> emptyList()
-        }
+    // Use LaunchedEffect to update isRefreshing after fetch completes
+    LaunchedEffect(serverListState.value) {
+        isRefreshing = false
     }
-
-    // Filter the servers based on the selected tab
-    filteredServers = when (selectedTabIndex) {
-        TabPage.All -> {
-            viewModel.getServerGroupsGroupedByCountry()
-        }
-        TabPage.Recommended -> {
-            viewModel.getServerGroupsGroupedByServerType()
-        }
-    }*/
 
     Scaffold(
         topBar = {
-            Column {
+            Column(
+                modifier = Modifier.background(CatTheme.colorScheme.background)
+            ) {
                 Crossfade(targetState = isSearchActive, label = "") { active -> // animate UI changes
                     if (active) {
                         SearchBar(
@@ -107,7 +91,6 @@ fun ServersScreen(
                             hint = stringResource(R.string.hint_locations),
                             onQueryChanged = { query ->
                                 searchQuery = query
-//                                viewModel.filterServers(query)
                             },
                             onClose = {
                                 isSearchActive = false
@@ -134,7 +117,6 @@ fun ServersScreen(
                         )
                     }
                 }
-                Spacer(Modifier.height(16.dp))
                 CustomTabRow(
                     selectedTabIndex = selectedTabIndex,
                     onTabSelected = { selectedTabIndex = it }
@@ -142,32 +124,30 @@ fun ServersScreen(
             }
         },
         content = { paddingValues ->
-            PullToRefreshBox(
-                isRefreshing = isRefreshing,
-                onRefresh = {
-                    isRefreshing = true
-                    viewModel.fetchServers()
-                    isRefreshing = false
-                }
-            ) {
-                val alreadyConnected = stringResource(R.string.already_connected)
-                ServersContent(
-                    modifier = Modifier.padding(paddingValues),
-                    serverListState = serverListState.value,
-//                    filteredServers = filteredServers,
-                    onUpdateServer = { server ->
-                        if (PrefUtils.selectedProfile?.ipaddress == server.ipaddress  && BaseService.isStarted)
-                            context.toast(alreadyConnected)
-                        else if (server.isPremium) {
-//                            navController.navigate(Destinations.PremiumScreen.route)
-                            navController.navigate(Destinations.PremiumScreen.route.replace("{source}", PremiumSource.SERVERS))
-                        } else {
-                            viewModel.setSelectedServer(server)
-                            homeViewModel.shouldReconnect(true)
-                            onBackPressed()
-                        }
+            Box(modifier = Modifier.padding(paddingValues)) {
+                PullToRefreshBox(
+                    isRefreshing = isRefreshing,
+                    onRefresh = {
+                        isRefreshing = true
+                        viewModel.fetchServers()
                     }
-                )
+                ) {
+                    val alreadyConnected = stringResource(R.string.already_connected)
+                    ServersContent(
+                        serverListState = serverListState.value,
+                        onUpdateServer = { server ->
+                            if (PrefUtils.selectedProfile?.ipaddress == server.ipaddress  && BaseService.isStarted)
+                                context.toast(alreadyConnected)
+                            else if (server.isPremium) {
+                                navController.navigate(Destinations.PremiumScreen.route.replace("{source}", PremiumSource.SERVERS))
+                            } else {
+                                viewModel.setSelectedServer(server)
+                                homeViewModel.shouldReconnect(true)
+                                onBackPressed()
+                            }
+                        }
+                    )
+                }
             }
         }
     )
@@ -177,7 +157,6 @@ fun ServersScreen(
 fun ServersContent(
     modifier: Modifier = Modifier,
     serverListState: Result<List<ServerGroupModel>>?,
-//    filteredServers: List<ServerGroupModel>,
     onUpdateServer: (ServerModel) -> Unit,
 ) {
     var shouldShowShimmer by remember { mutableStateOf(true) }

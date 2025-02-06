@@ -30,7 +30,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
@@ -39,12 +38,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -55,7 +51,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat.getString
-import androidx.core.view.WindowCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.android.billingclient.api.ProductDetails
@@ -85,23 +80,6 @@ fun PremiumScreen(
     PrefUtils.lastShownOfferDay = getDayOffset()
     val context = LocalContext.current
     val activity = getActivity()
-    val view = LocalView.current
-
-    // Change status bar for PremiumScreen
-    DisposableEffect(Unit) {
-        val window = (view.context as Activity).window
-
-        // Apply premium screen status bar
-        window.statusBarColor = Color.Transparent.toArgb() // Make it transparent
-        WindowCompat.setDecorFitsSystemWindows(window, false) // Extend content into status bar
-        WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false // White icons
-
-        // Reset status bar when PremiumScreen is removed
-        onDispose {
-            window.statusBarColor = Color.White.toArgb() // Restore default
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = true // Dark icons
-        }
-    }
 
     LaunchedEffect(premiumSource) {
         source = premiumSource
@@ -193,7 +171,7 @@ fun PremiumContent(
             IconButton(
                 onClick = { onClose() },
                 modifier = Modifier
-                    .padding(start = 8.dp, top = 32.dp)
+                    .padding(8.dp)
                     .align(Alignment.TopStart)
             ) {
                 Icon(

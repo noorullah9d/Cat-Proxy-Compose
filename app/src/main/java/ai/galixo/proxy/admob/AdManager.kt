@@ -134,7 +134,7 @@ fun Context.loadAdmobInterstitial(
     })
 }
 
-fun Activity.loadAndShowRewardedAd(
+fun Activity.loadRewardedAd(
     adUnitId: String,
     onAdFailedToLoad: (LoadAdError) -> Unit,
     onAdLoaded: (ad: RewardedAd) -> Unit

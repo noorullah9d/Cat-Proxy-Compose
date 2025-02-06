@@ -41,7 +41,8 @@ fun OnboardingPage(
                 .height(330.dp)
                 .padding(8.dp),
             animationRes = animRes,
-            iterations = LottieConstants.IterateForever
+            iterations = LottieConstants.IterateForever,
+            onAnimationEnd = {}
         )
         Spacer(modifier = Modifier.height(16.dp))
         Text(

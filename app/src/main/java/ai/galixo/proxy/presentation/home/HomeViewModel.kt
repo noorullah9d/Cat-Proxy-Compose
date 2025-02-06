@@ -5,6 +5,7 @@ import ai.galixo.proxy.domain.model.Stats
 import ai.galixo.proxy.domain.repository.ServersRepository
 import ai.galixo.proxy.presentation.base.BaseViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.shadowsocks.preference.PrefUtils
 import com.github.shadowsocks.preference.ServerModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -41,6 +42,32 @@ class HomeViewModel @Inject constructor(
 
     private val _shouldReconnect = MutableStateFlow(false)  // Initially false
     val shouldReconnect: StateFlow<Boolean> get() = _shouldReconnect
+
+    fun addFreeVpnTime(totalRewards: Int) {
+        Timber.d("addFreeVpnTime: total rewards: $totalRewards")
+        PrefUtils.freeVpnTime += when (totalRewards) {
+            1 -> 30 * 60 * 1000 // 30 minutes
+            2 -> 2 * 60 * 60 * 1000 // 2 hours
+            3 -> 24 * 60 * 60 * 1000 // 24 hours
+            else -> 0
+        }
+
+        // Save last reward time
+        PrefUtils.lastRewardTime = System.currentTimeMillis()
+    }
+
+    fun expireFreeVpnTimeIfNeeded() {
+        val currentTime = System.currentTimeMillis()
+        val lastRewardTimestamp = PrefUtils.lastRewardTime
+
+        // If 24 hours have passed since last reward, reset freeVpnTime
+        if (currentTime - lastRewardTimestamp >= 24 * 60 * 60 * 1000) { // 24 hours in milliseconds
+            PrefUtils.freeVpnTime = 0L
+            PrefUtils.lastRewardTime = 0L // Clear the last updated time after reset
+            Timber.d("expireFreeVpnTimeIfNeeded: Free VPN time expired after 24 hours.")
+        }
+    }
+
 
     fun shouldReconnect(should: Boolean) {
         _shouldReconnect.value = should

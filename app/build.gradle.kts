@@ -25,9 +25,10 @@ android {
     buildTypes {
         debug {
             isMinifyEnabled = false
+            isShrinkResources = false
 
-            resValue("string", "base_url", "https://proxydevapi.fusionsai.net/")
-//            resValue("string", "base_url", "https://proxyapiv2.fusionsai.net/")
+//            resValue("string", "base_url", "https://proxydevapi.fusionsai.net/")
+            resValue("string", "base_url", "https://proxyapiv2.fusionsai.net/")
             resValue("string", "support_url", "https://api.9dtechnologies.dev/api/support/")
 
             // test ad ids
@@ -54,6 +55,7 @@ android {
         }
         release {
             isMinifyEnabled = true
+            isShrinkResources = true
 
             resValue("string", "base_url", "https://proxyapiv2.fusionsai.net/")
             resValue("string", "support_url", "https://api.9dtechnologies.dev/api/support/")

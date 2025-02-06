@@ -25,6 +25,7 @@ import android.net.Uri
 import android.os.Parcelable
 import android.util.Base64
 import android.util.LongSparseArray
+import androidx.annotation.Keep
 import androidx.core.net.toUri
 import androidx.room.*
 import com.github.shadowsocks.plugin.PluginConfiguration
@@ -47,6 +48,7 @@ import java.util.*
 
 @Entity
 @Parcelize
+@Keep
 data class Profile(
         @PrimaryKey(autoGenerate = true)
         var id: Long = 0,

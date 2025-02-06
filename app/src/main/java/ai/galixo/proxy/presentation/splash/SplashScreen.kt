@@ -3,9 +3,7 @@ package ai.galixo.proxy.presentation.splash
 import ai.galixo.proxy.R
 import ai.galixo.proxy.admob.AppOpenManager
 import ai.galixo.proxy.admob.admob_interstitial_id_splash
-import ai.galixo.proxy.admob.admob_native_id_languages
 import ai.galixo.proxy.admob.loadAdmobInterstitial
-import ai.galixo.proxy.admob.nativeAd.NativeAd
 import ai.galixo.proxy.admob.requestConsentForm
 import ai.galixo.proxy.navigation.Destinations
 import ai.galixo.proxy.presentation.components.CountdownTimer
@@ -26,22 +24,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.airbnb.lottie.compose.LottieConstants
@@ -62,10 +56,8 @@ fun SplashScreen(
 ) {
     val context = LocalContext.current
     val activity = getActivity()
-    val view = LocalView.current
     val isAdsRemoved = remember { isAdsRemoved }
     val isOnline = remember { context.isOnline() }
-//    var isAnyAdShown by remember { mutableStateOf(false) }
     val interstitialAd = remember { mutableStateOf<InterstitialAd?>(null) }
     var showPremiumCountdown by remember { mutableStateOf(false) }
     var showAdCountdown by remember { mutableStateOf(false) }
@@ -103,22 +95,6 @@ fun SplashScreen(
             }
         } else {
             showPremiumCountdown = true
-        }
-    }
-
-    // Change status bar for PremiumScreen
-    DisposableEffect(Unit) {
-        val window = (view.context as Activity).window
-
-        // Apply premium screen status bar
-        window.statusBarColor = Color.Transparent.toArgb() // Make it transparent
-        WindowCompat.setDecorFitsSystemWindows(window, false) // Extend content into status bar
-        WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = false // White icons
-
-        // Reset status bar when PremiumScreen is removed
-        onDispose {
-            window.statusBarColor = Color.White.toArgb() // Restore default
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = true // Dark icons
         }
     }
 
@@ -186,15 +162,17 @@ fun StartAdCountDownTimer(
                     )
                 } else {
                     activity?.let {
-                        interstitialAd.value?.show(it,
-                            onAdShown = {
-                                if (!isCancelled) isCancelled = true // Stop timer immediately
-                            },
-                            onDismissed = {
-                                Timber.d("Interstitial Ad Shown: Cancelling Timer")
-                                onNavigate.invoke()
-                            }
-                        )
+                        if (!isShowingAd) {
+                            interstitialAd.value?.show(it,
+                                onAdShown = {
+                                    if (!isCancelled) isCancelled = true // Stop timer immediately
+                                },
+                                onDismissed = {
+                                    Timber.d("Interstitial Ad Shown: Cancelling Timer")
+                                    onNavigate.invoke()
+                                }
+                            )
+                        }
                     }
                 }
             }
@@ -280,7 +258,8 @@ fun SplashContent() {
                     .fillMaxWidth()
                     .align(Alignment.Center),
                 animationRes = R.raw.anim_splash,
-                iterations = LottieConstants.IterateForever
+                iterations = LottieConstants.IterateForever,
+                onAnimationEnd = {}
             )
         }
 
@@ -293,12 +272,13 @@ fun SplashContent() {
             LottieAnimation(
                 modifier = Modifier.fillMaxWidth(),
                 animationRes = R.raw.anim_splash_loading,
-                iterations = LottieConstants.IterateForever
+                iterations = LottieConstants.IterateForever,
+                onAnimationEnd = {}
             )
         }
         Text(
             modifier = Modifier.align(Alignment.CenterHorizontally),
-            text = "Configuring your device...",
+            text = stringResource(R.string.configuring_your_device),
             style = CatTheme.typography.regularText,
             color = CatTheme.colorScheme.onPrimary
         )

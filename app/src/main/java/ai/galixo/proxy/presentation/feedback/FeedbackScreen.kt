@@ -113,12 +113,12 @@ fun FeedbackContent(
     var feedbackText by remember { mutableStateOf("") }
 
     val categories = listOf(
-        "Overall Service",
-        "In-app Purchases",
-        "Speed & Efficiency",
-        "Location Missing",
-        "Connectivity Issue",
-        "App Crashes"
+        stringResource(R.string.overall_service),
+        stringResource(R.string.in_app_purchases),
+        stringResource(R.string.speed_and_efficiency),
+        stringResource(R.string.location_missing),
+        stringResource(R.string.connectivity_issue),
+        stringResource(R.string.app_crashes)
     )
 
     Column(
@@ -217,7 +217,7 @@ fun FeedbackInputField(
             .clip(CatTheme.shape.tile) // Increased corner radius
             .border(
                 width = 1.dp,
-                color = CatTheme.colorScheme.primary, // Stroke color
+                color = CatTheme.colorScheme.divider, // Stroke color
                 shape = CatTheme.shape.tile
             ),
         colors = TextFieldDefaults.colors(
@@ -230,9 +230,9 @@ fun FeedbackInputField(
         ),
         placeholder = {
             Text(
-                text = "Tell us what can we improve...",
+                text = stringResource(R.string.hint_feedback),
                 style = CatTheme.typography.medium,
-                color = CatTheme.colorScheme.textSecondary
+                color = CatTheme.colorScheme.textTertiary
             )
         },
         maxLines = 5 // Restrict maximum lines to 5
@@ -263,7 +263,7 @@ fun SubmitButton(
     ) {
         Text(
             modifier = Modifier.padding(vertical = 6.dp),
-            text = "Submit",
+            text = stringResource(R.string.submit),
             style = CatTheme.typography.bold.copy(
                 fontSize = 16.sp
             ),

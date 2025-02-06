@@ -48,7 +48,8 @@ fun FeedbackSuccessDialog(
                 LottieAnimation(
                     modifier = Modifier.size(150.dp),
                     animationRes = R.raw.anim_thumbs_up,
-                    iterations = LottieConstants.IterateForever
+                    iterations = LottieConstants.IterateForever,
+                    onAnimationEnd = {}
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
