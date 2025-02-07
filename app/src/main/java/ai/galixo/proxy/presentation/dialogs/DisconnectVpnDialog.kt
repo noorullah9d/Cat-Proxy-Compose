@@ -39,8 +39,8 @@ fun DisconnectVpnDialog(
     onDismiss: () -> Unit,
     onDisconnectClick: () -> Unit
 ) {
-    val isAdsRemoved = PrefUtils.isAdsRemoved
-    var isAnimationFinished by remember { mutableStateOf(isAdsRemoved) } // If ads are removed, show button immediately
+//    val isAdsRemoved = PrefUtils.isAdsRemoved
+    var isAnimationFinished by remember { mutableStateOf(/*isAdsRemoved*/false) } // If ads are removed, show button immediately
 
     Dialog(
         onDismissRequest = { onDismiss() },

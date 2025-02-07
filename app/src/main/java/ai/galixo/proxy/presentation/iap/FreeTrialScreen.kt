@@ -147,7 +147,7 @@ fun FreeTrialScreen(
                     context.toast(getString(context, R.string.failed_to_connect))
                 }
             } else {
-                context.toast(getString(context, R.string.no_internet_available))
+                context.toast(getString(context, R.string.no_internet_connection))
             }
         },
         navigateForward = {
@@ -310,7 +310,7 @@ fun FreeTrialContent(
                 text = stringResource(R.string.try_premium_for_free),
                 startColor = orange,
                 endColor = lightOrange,
-                modifier = Modifier.padding(16.dp),
+                modifier = Modifier.fillMaxWidth().padding(16.dp),
                 onClick = {
                     onPurchaseClick()
                 }

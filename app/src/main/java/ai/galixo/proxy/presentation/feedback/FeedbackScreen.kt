@@ -226,7 +226,7 @@ fun FeedbackInputField(
             disabledContainerColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
             focusedIndicatorColor = Color.Transparent,
-            cursorColor = CatTheme.colorScheme.onPrimary
+            cursorColor = CatTheme.colorScheme.textPrimary
         ),
         placeholder = {
             Text(

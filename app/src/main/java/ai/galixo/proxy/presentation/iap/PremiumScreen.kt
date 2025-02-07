@@ -314,7 +314,7 @@ fun PremiumContent(
                     text = stringResource(R.string.try_premium_for_free),
                     startColor = CatTheme.colorScheme.primary,
                     endColor = CatTheme.colorScheme.secondary,
-                    modifier = Modifier.padding(16.dp),
+                    modifier = Modifier.fillMaxWidth().padding(16.dp),
                     onClick = {
                         onYearlyClick()
                     }
@@ -443,7 +443,7 @@ private fun handleSubscriptionPurchase(
                 } else { context.toast(getString(context, R.string.failed_to_connect)) }
             } else { context.toast(getString(context, R.string.subscription_already_purchased)) }
         } else { context.toast(getString(context, R.string.failed_to_connect)) }
-    } else { context.toast(getString(context, R.string.no_internet_available)) }
+    } else { context.toast(getString(context, R.string.no_internet_connection)) }
 }
 
 private fun getBasePlanAndOffer(source: String?, selectedPlan: String?): Pair<String?, String?> {

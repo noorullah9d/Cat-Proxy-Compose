@@ -3,6 +3,7 @@ package ai.galixo.proxy.presentation.home
 import ai.galixo.proxy.R
 import ai.galixo.proxy.ui.theme.CatTheme
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
@@ -19,7 +20,7 @@ fun DisconnectButton(
 ) {
     OutlinedButton(
         onClick = { disconnectVpn() },
-        modifier = Modifier.padding(bottom = 10.dp),
+        modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp),
         border = BorderStroke(1.dp, CatTheme.colorScheme.divider),
         shape = CatTheme.shape.button,
         colors = ButtonDefaults.outlinedButtonColors(
@@ -27,9 +28,9 @@ fun DisconnectButton(
         )
     ) {
         Text(
-            modifier = Modifier.padding(horizontal = 14.dp, vertical = 6.dp),
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
             text = stringResource(R.string.disconnect),
-            style = CatTheme.typography.itemTitle,
+            style = CatTheme.typography.buttonText,
             color = CatTheme.colorScheme.primary
         )
     }

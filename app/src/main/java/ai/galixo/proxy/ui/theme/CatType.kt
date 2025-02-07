@@ -13,7 +13,7 @@ val typography = CatTypography(
     timerText = TextStyle(
         fontFamily = OpenSans,
         fontWeight = FontWeight.Bold,
-        fontSize = 22.sp
+        fontSize = 30.sp
     ),
     buttonText = TextStyle(
         fontFamily = OpenSans,

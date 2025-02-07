@@ -13,12 +13,17 @@ import ai.galixo.proxy.admob.nativeAd.NativeAdSize
 import ai.galixo.proxy.domain.model.Stats
 import ai.galixo.proxy.navigation.Destinations
 import ai.galixo.proxy.presentation.base.UiState
+import ai.galixo.proxy.presentation.components.GradientButton
 import ai.galixo.proxy.presentation.components.LottieAnimation
 import ai.galixo.proxy.presentation.dialogs.DisconnectVpnDialog
 import ai.galixo.proxy.presentation.dialogs.LoadingRewardProgressDialog
+import ai.galixo.proxy.presentation.dialogs.NoInternetDialog
+import ai.galixo.proxy.presentation.dialogs.NoServerFoundDialog
 import ai.galixo.proxy.presentation.dialogs.OfferDialog
 import ai.galixo.proxy.presentation.main.getActivity
 import ai.galixo.proxy.ui.theme.CatTheme
+import ai.galixo.proxy.ui.theme.lightOrange
+import ai.galixo.proxy.ui.theme.orange
 import ai.galixo.proxy.utils.GOT_REWARD_TIME
 import ai.galixo.proxy.utils.PremiumSource
 import ai.galixo.proxy.utils.extensions.isOnline
@@ -82,12 +87,15 @@ fun HomeScreen(
     val context = LocalContext.current
     val activity = getActivity()
     val progressToast = stringResource(R.string.connection_in_progress)
-    val serverNotAvailable = stringResource(R.string.server_not_available)
-    val noInternetAvailable = stringResource(R.string.no_internet_available)
+    val noInternetToast = stringResource(R.string.no_internet_connection)
 
     var showDisconnectDialog by remember { mutableStateOf(false) }
     var showOfferDialog by remember { mutableStateOf(false) }
+    var isAlreadyConnected by remember { mutableStateOf(false) }
     var showProgressDialog by remember { mutableStateOf(false) }
+    var showNoInternetDialog by remember { mutableStateOf(false) }
+    var showNoServerFoundDialog by remember { mutableStateOf(false) }
+    var retryAction by remember { mutableStateOf<() -> Unit>({}) } // Store the retry function dynamically
     var watchedAdsCount by remember { mutableIntStateOf(0) }
     var totalAdsToWatch by remember { mutableIntStateOf(0) }
     var rewardedAd: RewardedAd? by remember { mutableStateOf(null) }
@@ -105,7 +113,11 @@ fun HomeScreen(
             val adUnitId = adIds[watchedAdsCount] // Use corresponding ad ID
             activity?.loadRewardedAd(
                 adUnitId = adUnitId,
-                onAdFailedToLoad = { /* Handle failure */ },
+                onAdFailedToLoad = { error ->
+                    context.toast("Failed to load ad: ${error.message}")
+                    rewardedAd = null
+                    showProgressDialog = false
+                },
                 onAdLoaded = { ad ->
                     rewardedAd = ad
                     ad.fullScreenContentCallback = object : FullScreenContentCallback() {
@@ -125,8 +137,13 @@ fun HomeScreen(
                                 showProgressDialog = false
                                 viewModel.addFreeVpnTime(totalAdsToWatch)
                                 context.postAnalytics(GOT_REWARD_TIME)
-                                context.toast(context.getString(R.string.free_vpn_time_congratulations, freeVpnTime.formatToTime()))
-                                viewModel.connect()
+                                context.toast(
+                                    context.getString(
+                                        R.string.free_vpn_time_congratulations,
+                                        freeVpnTime.formatToTime()
+                                    )
+                                )
+                                if (!isAlreadyConnected) viewModel.connect()
                             }
                         }
                     }
@@ -157,6 +174,41 @@ fun HomeScreen(
         )
     }
 
+    fun handleReconnection() {
+        viewModel.expireFreeVpnTimeIfNeeded()
+        if (!isAdsRemoved && freeVpnTime <= 2000L) { // at least 2sec freeVpnTime is required
+            showOfferDialog = true
+            isAlreadyConnected = false
+        } else {
+            viewModel.shouldReconnect(false)
+            viewModel.reconnect()
+        }
+    }
+
+    fun handleConnection() {
+        viewModel.expireFreeVpnTimeIfNeeded()
+        Timber.d("HomeScreen: free vpn time = $freeVpnTime")
+        if (!isAdsRemoved && freeVpnTime <= 2000L) { // at least 2sec freeVpnTime is required
+            showOfferDialog = true
+            isAlreadyConnected = false
+        } else viewModel.connect()
+    }
+
+    fun handlePreConnection() {
+        viewModel.getPreConnectionStatus {
+            if (it == HomeUiState.Connecting) {
+                viewModel.stopConnection()
+            } else {
+                if (context.isOnline()) {
+                    handleConnection()
+                } else {
+                    showNoInternetDialog = true
+                    retryAction = { handleConnection() }
+                }
+            }
+        }
+    }
+
     LaunchedEffect(Unit) {
         viewModel.getPreConnectionStatus { state ->
             preConnectionState.value = state
@@ -174,15 +226,10 @@ fun HomeScreen(
         Timber.d("HomeScreen: shouldReconnect= $shouldReconnect")
         if (shouldReconnect) {
             if (context.isOnline()) {
-                viewModel.expireFreeVpnTimeIfNeeded()
-                if (!isAdsRemoved && freeVpnTime <= 2000L) // at least 2sec freeVpnTime is required
-                    showOfferDialog = true
-                else {
-                    viewModel.shouldReconnect(false)
-                    viewModel.reconnect()
-                }
+                handleReconnection()
             } else {
-                context.toast(noInternetAvailable)
+                showNoInternetDialog = true
+                retryAction = { handleReconnection() }
             }
         }
     }
@@ -212,23 +259,10 @@ fun HomeScreen(
                 },
                 connectVpn = {
                     if (viewModel.isServerSelected()) {
-                        viewModel.getPreConnectionStatus {
-                            if (it == HomeUiState.Connecting) {
-                                viewModel.stopConnection()
-                            } else {
-                                if (context.isOnline()) {
-                                    viewModel.expireFreeVpnTimeIfNeeded()
-                                    Timber.d("HomeScreen: free vpn time = $freeVpnTime")
-                                    if (!isAdsRemoved && freeVpnTime <= 2000L) // at least 2sec freeVpnTime is required
-                                        showOfferDialog = true
-                                    else viewModel.connect()
-                                } else {
-                                    // show no internet dialog
-                                    context.toast(noInternetAvailable)
-                                }
-                            }
-                        }
-                    } else context.toast(serverNotAvailable)
+                        handlePreConnection()
+                    } else {
+                        showNoServerFoundDialog = true
+                    }
                 },
                 disconnectVpn = {
                     showDisconnectDialog = true
@@ -241,6 +275,10 @@ fun HomeScreen(
                             PremiumSource.PREMIUM_BUTTON
                         )
                     )
+                },
+                onGetExtraTimeClick = {
+                    showOfferDialog = true
+                    isAlreadyConnected = true
                 }
             )
         }
@@ -301,6 +339,23 @@ fun HomeScreen(
             }
         )
     }
+
+    if (showNoInternetDialog) {
+        NoInternetDialog(
+            onDismiss = { showNoInternetDialog = false },
+            onTryAgainClick = {
+                if (context.isOnline()) retryAction()
+                else context.toast(noInternetToast)
+            }
+        )
+    }
+
+    if (showNoServerFoundDialog) {
+        NoServerFoundDialog(
+            onDismiss = { showNoServerFoundDialog = false },
+            onTryAgainClick = { handlePreConnection() }
+        )
+    }
 }
 
 @Composable
@@ -312,7 +367,8 @@ fun HomeContent(
     onServerClick: () -> Unit,
     connectVpn: () -> Unit,
     disconnectVpn: () -> Unit,
-    onPremiumClick: () -> Unit
+    onPremiumClick: () -> Unit,
+    onGetExtraTimeClick: () -> Unit
 ) {
     val context = LocalContext.current
     Column(
@@ -366,11 +422,18 @@ fun HomeContent(
                 Text(
                     modifier = Modifier,
                     text = trafficStats.connectionTime,
-                    style = CatTheme.typography.toolbarTitle,
+                    style = CatTheme.typography.timerText,
                     color = CatTheme.colorScheme.textPrimary
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                DisconnectButton { disconnectVpn() }
+                GradientButton(
+                    text = stringResource(R.string.get_extra_time),
+                    startColor = orange,
+                    endColor = lightOrange,
+                    onClick = {
+                        onGetExtraTimeClick()
+                    }
+                )
             }
 
             else -> {
@@ -414,7 +477,10 @@ fun HomeContent(
         }
         Spacer(modifier = Modifier.height(16.dp))
         when (homeUiState?.value?.data) {
-            is HomeUiState.Connected -> {}
+            is HomeUiState.Connected -> {
+                DisconnectButton { disconnectVpn() }
+            }
+
             else -> {
                 Image(
                     painter = painterResource(id = R.drawable.img_premium_yellow),
@@ -430,7 +496,6 @@ fun HomeContent(
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
-
         LoadNativeAd(
             context = context,
             adUnitId = admob_native_id_home,
@@ -457,7 +522,8 @@ fun HomePreview() {
             onServerClick = {},
             connectVpn = {},
             disconnectVpn = {},
-            onPremiumClick = {}
+            onPremiumClick = {},
+            onGetExtraTimeClick = {}
         )
     }
 }

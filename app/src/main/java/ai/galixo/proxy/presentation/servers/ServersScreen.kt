@@ -68,6 +68,10 @@ fun ServersScreen(
     var isSearchActive by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
 
+    LaunchedEffect(Unit) {
+        viewModel.fetchServers()
+    }
+
     // Call the viewModel function to filter servers whenever the search query or tab changes
     LaunchedEffect(searchQuery, selectedTabIndex) {
         viewModel.filterServers(searchQuery, selectedTabIndex)

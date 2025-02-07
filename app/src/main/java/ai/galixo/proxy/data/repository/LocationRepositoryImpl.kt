@@ -74,7 +74,7 @@ class LocationRepositoryImpl @Inject constructor(
                     Result.Error("Error: ${response.code()} - ${response.message()}")
                 }
             } else {
-                Result.Error(context.getString(R.string.no_internet_available))
+                Result.Error(context.getString(R.string.no_internet_connection))
             }
         } catch (e: Exception) {
             // Catching network errors or other issues

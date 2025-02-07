@@ -33,7 +33,6 @@ fun GradientButton(
 
     Box(
         modifier = modifier
-            .fillMaxWidth()
             .clip(CatTheme.shape.button) // Clip to button shape
             .background(brush = gradientBrush) // Apply Gradient
             .clickable(onClick = onClick)
@@ -41,6 +40,7 @@ fun GradientButton(
         contentAlignment = Alignment.Center
     ) {
         Text(
+            modifier = Modifier.padding(horizontal = 16.dp),
             text = text,
             style = CatTheme.typography.buttonText,
             color = CatTheme.colorScheme.onPrimary

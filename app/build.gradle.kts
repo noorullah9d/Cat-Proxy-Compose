@@ -16,8 +16,8 @@ android {
         applicationId = "com.free.vpn.unblock.proxy.hotspot.securevpn"
         minSdk = 24
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 29
+        versionName = "1.2.8"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

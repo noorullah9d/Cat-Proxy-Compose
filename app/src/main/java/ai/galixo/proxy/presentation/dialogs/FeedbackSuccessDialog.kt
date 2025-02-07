@@ -17,9 +17,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.airbnb.lottie.compose.LottieConstants
 
@@ -36,17 +38,16 @@ fun FeedbackSuccessDialog(
             color = CatTheme.colorScheme.background,
             modifier = modifier
                 .fillMaxWidth()
-                .padding(16.dp)
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(24.dp),
+                    .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
                 LottieAnimation(
-                    modifier = Modifier.size(150.dp),
+                    modifier = Modifier.size(130.dp),
                     animationRes = R.raw.anim_thumbs_up,
                     iterations = LottieConstants.IterateForever,
                     onAnimationEnd = {}
@@ -55,8 +56,10 @@ fun FeedbackSuccessDialog(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "Thank You!",
-                    style = CatTheme.typography.bold,
+                    text = stringResource(R.string.thank_you),
+                    style = CatTheme.typography.bold.copy(
+                        fontSize = 22.sp
+                    ),
                     color = CatTheme.colorScheme.textPrimary,
                     textAlign = TextAlign.Center
                 )
@@ -64,8 +67,10 @@ fun FeedbackSuccessDialog(
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "Your feedback was successfully submitted.",
-                    style = CatTheme.typography.medium,
+                    text = stringResource(R.string.feedback_success_summary),
+                    style = CatTheme.typography.medium.copy(
+                        fontSize = 13.sp
+                    ),
                     color = CatTheme.colorScheme.textSecondary,
                     textAlign = TextAlign.Center
                 )
@@ -81,8 +86,9 @@ fun FeedbackSuccessDialog(
                     )
                 ) {
                     Text(
-                        text = "Back to Home",
-                        style = CatTheme.typography.medium,
+                        modifier = Modifier.padding(vertical = 8.dp),
+                        text = stringResource(R.string.back_to_home),
+                        style = CatTheme.typography.buttonText,
                         color = CatTheme.colorScheme.onPrimary
                     )
                 }

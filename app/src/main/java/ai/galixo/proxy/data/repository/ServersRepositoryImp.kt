@@ -116,7 +116,7 @@ class ServersRepositoryImp @Inject constructor(
 
     private suspend fun handleServerFetchFailure(initialLocalList: List<ServerEntity>) {
         if (initialLocalList.isEmpty()) {
-            _serverListState.value = Result.Error(context.getString(R.string.server_not_available))
+            _serverListState.value = Result.Error(context.getString(R.string.server_not_found))
         } else {
             serversFetchingCalled = false
             val decryptedList = calculatePingAndDecryptText(initialLocalList)

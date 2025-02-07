@@ -79,7 +79,6 @@ private fun PopulateSmallNative(nativeAd: NativeAd?, composeView: View?) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(4.dp)
             .clip(CardDefaults.shape)
             .combinedClickable {
                 composeView?.performClick()
