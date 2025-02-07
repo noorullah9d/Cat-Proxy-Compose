@@ -8,6 +8,7 @@ import ai.galixo.proxy.navigation.Destinations
 import ai.galixo.proxy.presentation.components.CenteredCircularProgressIndicator
 import ai.galixo.proxy.presentation.components.CustomTopAppBar
 import ai.galixo.proxy.presentation.components.SearchBar
+import ai.galixo.proxy.presentation.main.getActivity
 import ai.galixo.proxy.ui.theme.CatTheme
 import ai.galixo.proxy.utils.Result
 import androidx.compose.foundation.Image
@@ -35,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.github.shadowsocks.preference.LanguageModel
+import com.github.shadowsocks.preference.PrefUtils
 
 @Composable
 fun LanguageScreen(
@@ -42,6 +44,7 @@ fun LanguageScreen(
     navController: NavController
 ) {
     val context = LocalContext.current
+    val activity = getActivity()
     val languageListState = viewModel.languageListState.collectAsState()
     val selectedLanguage by viewModel.selectedLanguage.collectAsState()
     var searchQuery by remember { mutableStateOf("") }
@@ -75,9 +78,16 @@ fun LanguageScreen(
                             modifier = Modifier
                                 .padding(16.dp)
                                 .clickable {
-                                    viewModel.saveSelectedLanguageToPrefs(selectedLanguage)
-                                    navController.navigateToHomeAndFinish()
                                     viewModel.setLanguageScreenShown(true) // will change later
+                                    PrefUtils.selectedLanguage?.let { currentLanguage ->
+                                        if (selectedLanguage?.languageCode != currentLanguage.languageCode) {
+                                            viewModel.saveSelectedLanguageToPrefs(selectedLanguage)
+                                            activity?.recreate()
+                                            navController.navigateToHomeAndFinish()
+                                        } else {
+                                            navController.navigateToHomeAndFinish()
+                                        }
+                                    } ?: navController.navigateToHomeAndFinish()
                                 }
                                 .clip(CatTheme.shape.ad)
                                 .background(CatTheme.colorScheme.primary),

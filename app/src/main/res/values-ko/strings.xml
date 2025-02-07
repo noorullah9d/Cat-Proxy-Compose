@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Cat-Proxy</string>
+    <string name="app_name">Cat Proxy</string>
     <string name="language">언어</string>
     <string name="restore_purchase">구매 복원</string>
     <string name="split_tunneling">스플릿 터널링</string>

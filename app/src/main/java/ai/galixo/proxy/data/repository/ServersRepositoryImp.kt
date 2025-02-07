@@ -212,7 +212,7 @@ class ServersRepositoryImp @Inject constructor(
     }
 
     private fun updateSelectedServer() {
-        /*if (!BaseService.isStarted)*/ selectedProfile = fastestServer
+        if (!BaseService.isStarted) selectedProfile = fastestServer
         _selectedServer.value = selectedProfile
     }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Cat-Proxy</string>
+    <string name="app_name">Cat Proxy</string>
     <string name="language">Sprache</string>
     <string name="restore_purchase">Kauf wiederherstellen</string>
     <string name="split_tunneling">Getrenntes Tunneln</string>

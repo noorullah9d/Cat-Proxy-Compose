@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Cat-Proxy</string>
+    <string name="app_name">Cat Proxy</string>
     <string name="language">Ngôn ngữ</string>
     <string name="restore_purchase">Khôi phục giao dịch mua</string>
     <string name="split_tunneling">Đường hầm chia nhỏ</string>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Cat-Proxy</string>
+    <string name="app_name">Cat Proxy</string>
     <string name="language">Γλώσσα</string>
     <string name="restore_purchase">Επαναφορά αγοράς</string>
     <string name="split_tunneling">Διαχωρισμένη σήραγγα</string>

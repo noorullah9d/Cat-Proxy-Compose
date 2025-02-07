@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Cat-Proxy</string>
+    <string name="app_name">Cat Proxy</string>
     <string name="language">Sprog</string>
     <string name="restore_purchase">Gendan køb</string>
     <string name="split_tunneling">Opdelt tunneling</string>
